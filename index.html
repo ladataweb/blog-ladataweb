@@ -1,0 +1,21 @@
+---
+layout: default
+title: Blog
+---
+
+<section class="home-hero container narrow">
+  <h1>Blog</h1>
+  <p>Notas sobre datos, Power BI, Fabric, Azure y automatización.</p>
+</section>
+
+<section class="post-list container narrow">
+  {% for post in site.posts %}
+    <article class="post-card">
+      <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      <p class="post-meta">{{ post.date | date: "%-d %B %Y" }}</p>
+      <div class="excerpt">
+        {{ post.excerpt }}
+      </div>
+    </article>
+  {% endfor %}
+</section>
