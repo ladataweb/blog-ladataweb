@@ -1,35 +1,58 @@
 <!doctype html>
-<html lang="{{ page.lang | default: site.lang | default: 'es' }}">
+<html lang="{{ page.lang | default: site.lang | default: 'es-AR' }}">
   <head>
     {% include head.html %}
   </head>
   <body>
-    <div class="site-shell">
-      <aside class="site-sidebar">
-        <div class="site-sidebar-inner">
-          <a class="site-brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <div class="site">
+      <aside class="sidebar">
+        <div class="sidebar__inner">
+          <div class="sidebar__top">
+            <a class="brand" href="{{ '/' | relative_url }}">
+              <span class="brand__title">{{ site.title }}</span>
+            </a>
 
-          <div class="site-social">
-            <a href="https://ladataweb.com.ar" target="_blank" rel="noopener">Web</a>
-            <a href="https://github.com/ibarrau-pi" target="_blank" rel="noopener">GitHub</a>
+            <p class="sidebar__bio">
+              {{ site.description }}
+            </p>
+
+            <nav class="sidebar__nav" aria-label="Principal">
+              <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Inicio</a>
+              <a href="{{ '/archive/' | relative_url }}" {% if page.url == "/archive/" %}aria-current="page"{% endif %}>Archivo</a>
+              {% if site.main_site_url %}
+                <a href="{{ site.main_site_url }}" target="_blank" rel="noopener">Web principal</a>
+              {% endif %}
+            </nav>
           </div>
-          <p class="site-tagline">
-            Blog sobre datos, Power BI, Fabric, Azure y automatización.
-          </p>
 
-          <nav class="site-menu">
-            <a href="{{ '/' | relative_url }}">Inicio</a>
-            <a href="{{ '/archive/' | relative_url }}">Archivo</a>
-            <a href="https://ladataweb.com.ar" target="_blank" rel="noopener">Web principal</a>
-          </nav>
+          <div class="sidebar__bottom">
+            <div class="sidebar__socials" aria-label="Redes sociales">
+              {% if site.socials.linkedin %}
+                <a href="{{ site.socials.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>
+              {% endif %}
+              {% if site.socials.github %}
+                <a href="{{ site.socials.github }}" target="_blank" rel="noopener">GitHub</a>
+              {% endif %}
+              {% if site.socials.x %}
+                <a href="{{ site.socials.x }}" target="_blank" rel="noopener">X</a>
+              {% endif %}
+              {% if site.socials.instagram %}
+                <a href="{{ site.socials.instagram }}" target="_blank" rel="noopener">Instagram</a>
+              {% endif %}
+              {% if site.socials.email %}
+                <a href="mailto:{{ site.socials.email }}">Email</a>
+              {% endif %}
+            </div>
 
-          <div class="site-sidebar-meta">
-            <p>Escribiendo sobre analítica, automatización y plataformas Microsoft.</p>
+            <p class="sidebar__meta">
+              <span>{{ site.author | default: site.title }}</span><br>
+              <span>{{ site.time | date: '%Y' }}</span>
+            </p>
           </div>
         </div>
       </aside>
 
-      <main class="site-main">
+      <main class="content">
         {{ content }}
       </main>
     </div>

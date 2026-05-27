@@ -1,0 +1,25 @@
+---
+layout: default
+title: Archivo
+permalink: /archive/
+---
+
+<section class="archive">
+  <header class="archive__header">
+    <p class="home__kicker">Archivo</p>
+    <h1 class="home__title">Todos los artículos</h1>
+  </header>
+
+  <div class="archive__list">
+    {% for post in site.posts %}
+      <article class="archive__item">
+        <time class="archive__date" datetime="{{ post.date | date_to_xmlschema }}">
+          {{ post.date | date: "%Y-%m-%d" }}
+        </time>
+        <h2 class="archive__title">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h2>
+      </article>
+    {% endfor %}
+  </div>
+</section>
