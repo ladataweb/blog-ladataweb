@@ -7,47 +7,109 @@
     <div class="site">
       <aside class="sidebar">
         <div class="sidebar__inner">
-          <div class="sidebar__top">
-            <a class="brand" href="{{ '/' | relative_url }}">
-              <span class="brand__title">{{ site.title }}</span>
+          <div class="sidebar__mobilebar">
+            <a class="brand brand--mobile" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
+              {% if site.logo %}
+                <img src="{{ site.logo | relative_url }}" alt="{{ site.title }}" class="brand__logo">
+              {% else %}
+                <span class="brand__title">{{ site.title }}</span>
+              {% endif %}
             </a>
 
-            <p class="sidebar__bio">
-              {{ site.description }}
-            </p>
+            <div class="sidebar__mobile-actions">
+              <div class="sidebar__socials sidebar__socials--mobile" aria-label="Redes sociales">
+                {% if site.socials.linkedin %}
+                  <a href="{{ site.socials.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+                    <span class="icon">in</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.github %}
+                  <a href="{{ site.socials.github }}" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+                    <span class="icon">GH</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.x %}
+                  <a href="{{ site.socials.x }}" target="_blank" rel="noopener" aria-label="X" title="X">
+                    <span class="icon">X</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.instagram %}
+                  <a href="{{ site.socials.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+                    <span class="icon">IG</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.email %}
+                  <a href="mailto:{{ site.socials.email }}" aria-label="Email" title="Email">
+                    <span class="icon">@</span>
+                  </a>
+                {% endif %}
+              </div>
 
-            <nav class="sidebar__nav" aria-label="Principal">
-              <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Inicio</a>
-              <a href="{{ '/archive/' | relative_url }}" {% if page.url == "/archive/" %}aria-current="page"{% endif %}>Archivo</a>
-              {% if site.main_site_url %}
-                <a href="{{ site.main_site_url }}" target="_blank" rel="noopener">Web principal</a>
-              {% endif %}
-            </nav>
+              <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+            </div>
           </div>
 
-          <div class="sidebar__bottom">
-            <div class="sidebar__socials" aria-label="Redes sociales">
-              {% if site.socials.linkedin %}
-                <a href="{{ site.socials.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>
-              {% endif %}
-              {% if site.socials.github %}
-                <a href="{{ site.socials.github }}" target="_blank" rel="noopener">GitHub</a>
-              {% endif %}
-              {% if site.socials.x %}
-                <a href="{{ site.socials.x }}" target="_blank" rel="noopener">X</a>
-              {% endif %}
-              {% if site.socials.instagram %}
-                <a href="{{ site.socials.instagram }}" target="_blank" rel="noopener">Instagram</a>
-              {% endif %}
-              {% if site.socials.email %}
-                <a href="mailto:{{ site.socials.email }}">Email</a>
-              {% endif %}
+          <div class="sidebar__content" id="mobile-menu">
+            <div class="sidebar__center">
+              <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
+                {% if site.logo %}
+                  <img src="{{ site.logo | relative_url }}" alt="{{ site.title }}" class="brand__logo">
+                {% else %}
+                  <span class="brand__title">{{ site.title }}</span>
+                {% endif %}
+              </a>
+
+              <p class="sidebar__bio">
+                {{ site.description }}
+              </p>
+
+              <nav class="sidebar__nav" aria-label="Principal">
+                <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Inicio</a>
+                <a href="{{ '/archive/' | relative_url }}" {% if page.url == "/archive/" %}aria-current="page"{% endif %}>Archivo</a>
+                {% if site.main_site_url %}
+                  <a href="{{ site.main_site_url }}" target="_blank" rel="noopener">Web principal</a>
+                {% endif %}
+              </nav>
             </div>
 
-            <p class="sidebar__meta">
-              <span>{{ site.author | default: site.title }}</span><br>
-              <span>{{ site.time | date: '%Y' }}</span>
-            </p>
+            <div class="sidebar__bottom">
+              <div class="sidebar__socials" aria-label="Redes sociales">
+                {% if site.socials.linkedin %}
+                  <a href="{{ site.socials.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+                    <span class="icon">in</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.github %}
+                  <a href="{{ site.socials.github }}" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+                    <span class="icon">GH</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.x %}
+                  <a href="{{ site.socials.x }}" target="_blank" rel="noopener" aria-label="X" title="X">
+                    <span class="icon">X</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.instagram %}
+                  <a href="{{ site.socials.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+                    <span class="icon">IG</span>
+                  </a>
+                {% endif %}
+                {% if site.socials.email %}
+                  <a href="mailto:{{ site.socials.email }}" aria-label="Email" title="Email">
+                    <span class="icon">@</span>
+                  </a>
+                {% endif %}
+              </div>
+
+              <p class="sidebar__meta">
+                <span>{{ site.author | default: site.title }}</span><br>
+                <span>{{ site.time | date: '%Y' }}</span>
+              </p>
+            </div>
           </div>
         </div>
       </aside>
@@ -56,5 +118,19 @@
         {{ content }}
       </main>
     </div>
+
+    <script>
+      (function () {
+        var button = document.querySelector('.menu-toggle');
+        var menu = document.getElementById('mobile-menu');
+        if (!button || !menu) return;
+
+        button.addEventListener('click', function () {
+          var expanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', String(!expanded));
+          document.body.classList.toggle('menu-open', !expanded);
+        });
+      })();
+    </script>
   </body>
 </html>

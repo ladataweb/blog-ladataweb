@@ -12,8 +12,6 @@
   --shadow: 0 10px 30px rgba(34, 24, 16, 0.06);
   --radius: 18px;
   --sidebar-width: 320px;
-  --content-width: 860px;
-  --reading-width: 760px;
 }
 
 *,
@@ -39,6 +37,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -48,23 +50,11 @@ img {
 a {
   color: var(--accent-dark);
   text-decoration: none;
-  transition: color 180ms ease, opacity 180ms ease, background-color 180ms ease, border-color 180ms ease;
+  transition: color 180ms ease, opacity 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 a:hover {
   color: var(--accent-strong);
-}
-
-.profile {
-  margin-bottom: 1rem;
-}
-
-.profile img {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
-  object-fit: cover;
-  box-shadow: var(--shadow);
 }
 
 .site {
@@ -82,22 +72,53 @@ a:hover {
   position: sticky;
   top: 24px;
   height: calc(100vh - 48px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 28px;
   background: rgba(255, 253, 249, 0.78);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(77, 62, 62, 0.08);
   border-radius: 24px;
   box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.sidebar__mobilebar {
+  display: none;
+}
+
+.sidebar__content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+}
+
+.sidebar__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sidebar__bottom {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  justify-content: center;
+  margin-bottom: 1.4rem;
+}
+
+.brand__logo {
+  max-width: 140px;
+  max-height: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .brand__title {
@@ -112,13 +133,15 @@ a:hover {
   margin: 0 0 1.75rem;
   color: var(--muted);
   font-size: 0.98rem;
-  max-width: 28ch;
+  max-width: 26ch;
 }
 
 .sidebar__nav {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.35rem;
+  max-width: 220px;
 }
 
 .sidebar__nav a {
@@ -128,6 +151,7 @@ a:hover {
   color: var(--text);
   font-weight: 600;
   background: transparent;
+  text-align: center;
 }
 
 .sidebar__nav a:hover {
@@ -143,28 +167,37 @@ a:hover {
 .sidebar__socials {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.65rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .sidebar__socials a {
+  width: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  padding: 0.6rem 0.9rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
   color: var(--text);
-  font-size: 0.92rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .sidebar__socials a:hover {
   border-color: rgba(243, 169, 119, 0.55);
   background: rgba(243, 169, 119, 0.14);
   color: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar__meta {
@@ -172,17 +205,12 @@ a:hover {
   color: var(--soft);
   font-size: 0.88rem;
   line-height: 1.5;
+  text-align: center;
 }
 
 .content {
   min-width: 0;
-  padding: 48px 40px 72px;
-}
-
-.home,
-.archive,
-.article {
-  width: min(100%, var(--content-width));
+  padding: 48px 40px 72px 24px;
 }
 
 .home__header,
@@ -212,7 +240,7 @@ a:hover {
 }
 
 .home__intro {
-  max-width: 62ch;
+  max-width: 70ch;
   margin: 1rem 0 0;
   font-size: 1.02rem;
   color: var(--muted);
@@ -297,10 +325,6 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-}
-
-.article {
-  max-width: var(--reading-width);
 }
 
 .article__header {
@@ -499,13 +523,40 @@ a:hover {
   color: var(--accent-dark);
 }
 
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 3px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
 @media (max-width: 1100px) {
   :root {
     --sidebar-width: 280px;
   }
 
   .content {
-    padding: 36px 28px 60px;
+    padding: 36px 28px 60px 20px;
+  }
+
+  .brand__logo {
+    max-width: 120px;
+    max-height: 120px;
   }
 }
 
@@ -522,9 +573,89 @@ a:hover {
   .sidebar__inner {
     position: static;
     height: auto;
-    gap: 1.5rem;
     border-radius: 20px;
-    padding: 22px;
+  }
+
+  .sidebar__mobilebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+
+  .brand--mobile {
+    margin: 0;
+  }
+
+  .brand--mobile .brand__logo {
+    max-width: 84px;
+    max-height: 48px;
+  }
+
+  .brand--mobile .brand__title {
+    font-size: 1.05rem;
+  }
+
+  .sidebar__mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .sidebar__socials--mobile {
+    display: flex;
+    margin: 0;
+  }
+
+  .sidebar__socials--mobile a {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .sidebar__content {
+    display: none;
+    height: auto;
+    padding: 0 16px 18px;
+  }
+
+  body.menu-open .sidebar__content {
+    display: flex;
+  }
+
+  .sidebar__center {
+    padding-top: 0.75rem;
+  }
+
+  .sidebar__center .brand {
+    display: none;
+  }
+
+  .sidebar__bio {
+    max-width: none;
+    font-size: 0.95rem;
+  }
+
+  .sidebar__nav {
+    max-width: none;
+    width: 100%;
+  }
+
+  .sidebar__bottom {
+    margin-top: 1.5rem;
+  }
+
+  .sidebar__bottom .sidebar__socials {
+    display: none;
+  }
+
+  .sidebar__meta {
+    text-align: left;
+    width: 100%;
   }
 
   .content {
@@ -541,22 +672,14 @@ a:hover {
 }
 
 @media (max-width: 640px) {
-  .brand__title {
-    font-size: 1.15rem;
+  .sidebar__mobilebar {
+    padding: 12px 14px;
   }
 
-  .sidebar__bio {
-    font-size: 0.94rem;
-  }
-
-  .sidebar__nav a {
-    padding: 0.8rem 0.9rem;
-  }
-
-  .sidebar__socials a {
-    min-height: 38px;
-    padding: 0.55rem 0.85rem;
-    font-size: 0.88rem;
+  .sidebar__socials--mobile a {
+    width: 34px;
+    height: 34px;
+    font-size: 0.72rem;
   }
 
   .home__title {
