@@ -1,0 +1,20 @@
+title: La Data Web Blog
+description: Blog de datos, Power BI, Fabric, Azure y automatización
+url: "https://ladataweb.github.io"
+baseurl: "/blog-ladataweb"
+lang: es-AR
+timezone: America/Argentina/Jujuy
+
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:year/:month/:day/:slug/
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - tumblr-export/
+  - scripts/
+  - README.md
