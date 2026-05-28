@@ -443,7 +443,7 @@ a:hover {
 }
 
 .article__title {
-  margin: 0 0 0.8rem;
+  margin: 0 0 3.8rem;
   font-size: clamp(2rem, 3.4vw, 3.1rem);
   line-height: 1.04;
   letter-spacing: -0.045em;
