@@ -1,0 +1,35 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DataModeling] Sincronizar filtros entre dimensiones</h1>
+                    <p>El modelado de datos de Power Bi se vuelve cada vez más poderoso. Algunas veces, esta potencia es usada sin consideración de efectos secundarios. Lo expertos suelen mencionar el riesgo de la bidireccionalidad entre tablas o la falta de armado de un modelado de los datos.<br/></p><p>Algunos de estos casos de bidireccionalidad eran mitigados construyendo medidas (CROSSFILTER) para que aquel cambio en la navegación solo afecte al valor calculado. Aún así, muchos optaban por hacer dicho cambio porque los requerimientos del cliente incluían que una dimensión pueda filtrar a otra.<br/>En los primeros release de Power Bi esto era posible bugueando las visualizaciones. Hoy, gracias al update de Junio, es posible realizarlo de forma convencional sin bug. Esto sucede gracias a la nueva posibilidad de poder incorporar filtros a nivel visual dentro de la visualización de segmentación de datos. Entonces podríamos agregar una medida como filtro que nos ayude a determinar los elementos que deberían permanecer tras filtrar otra dimensión.</p><p>Veamos como se hace:</p>[[MORE]]<figure data-orig-width="769" data-orig-height="423" class="tmblr-full"><img src="https://64.media.tumblr.com/580d98699a76158b24d58223984ec35c/bc4b38213983b735-e7/s540x810/685f1e925b2ec5cf06b8b7869502000c51b97ea5.png" alt="image" data-orig-width="769" data-orig-height="423"/></figure><p>Como podemos apreciar, ambos gráficos de barra están siendo filtrados por los productos seleccionados. No siendo así con la segmentación de datos de categoría (filtro).</p><p>La razón de esto es que la mayoría de las visualizaciones de Power Bi esconden las filas resultantes si la medida que estamos usando produce un (en blanco). Porque los productos calcetines y bielas no aparecen en las ventas como categoría bicicleta, el precio para bicicleta es “en blanco”. Por ello el gráfico de barras no está mostrando dicha categoría.</p><p>Para este tipo de casos que los usuarios solicitaban que productos filtren a categoría, los analistas solían recurrir a hacer bidireccional la relación entre las tablas. Esto podría resolver el problema para casos sencillos de una sola tabla de hecho, pero a pesar de ello hay muchos artículos que explican el riesgo y problemas que este cambio puede desencadenar.</p><figure data-orig-width="678" data-orig-height="286" class="tmblr-full"><img src="https://64.media.tumblr.com/4031494e0a3af5b39b4ba8f5f65175db/bc4b38213983b735-a8/s540x810/9d29a0988a83187a981d03a1a6b82a1b30f2cc27.png" alt="image" data-orig-width="678" data-orig-height="286"/></figure><p>
+
+Power BI ahora permite agregar filtros a nivel visual a Segmentación de datos (también conocidos como filtros o slicers en inglés) incluyendo tanto columnas como medidas:
+
+<br/></p><figure data-orig-width="771" data-orig-height="351" class="tmblr-full"><img src="https://64.media.tumblr.com/d1d078127506f9d9082a91b26dd3bee3/bc4b38213983b735-41/s540x810/672abf515da1830e6faea84caaedbc27e5fc0967.png" alt="image" data-orig-width="771" data-orig-height="351"/></figure><p>Tras agregar el filtro de nivel de objeto visual que requiere que Precio no sea blanco, todas las categorías que no tengan ventas para dichos productos van a desaparecer. El resultado es brutal. </p><p>En principio no parecía tan útil poder agregar este tipo de filtro salvo para ocultar valores. En cambio ésto le da una gran perspectiva que permite a los usuarios finales concretar sus requerimientos sin necesidad de poner en riesgo al modelo de datos. Si lo que necesitas es sincronizar filtros entre dimensiones sin entorpecer el modelo, ¡esto es lo que tenes que hacer! ¡NO ESPERES MÁS! </p><p>Antes de seguir, los expertos se plantean si es buena idea usar la medida en cuestión para ocultar valores de las dimensiones o no. La respuesta es que si bien es funcional, no es lo ideal. No hay necesidad de correr un cálculo complejo para cada descripcion de una dimensión si el objetivo es solo ocultar valores de la dimensión sin hechos. La mejor forma, según el crack de DAX Marco, es usar una expresión <a href="https://dax.guide/not/" target="_blank">NOT</a> <a href="https://dax.guide/isempty/" target="_blank">ISEMPTY</a>, que es más rápido para este objetivo que cualquier otra forma.</p><figure data-orig-width="474" data-orig-height="21" class="tmblr-full"><img src="https://64.media.tumblr.com/a27e2ef3b80d6a1fbda902326af951ad/bc4b38213983b735-ef/s540x810/798d0e022f642457b882b9764c7425b6deedce3b.png" alt="image" data-orig-width="474" data-orig-height="21"/></figure><blockquote><p>Filtro_Categoria_con_Producto = INT ( NOT ISEMPTY ( ‘Hecho_Ventas’ ) )</p></blockquote><p>El resultado de dicha medida es 0 o 1. Nuestro filtro solo debería mostrar valores que retornen 1 para la medida escondiendo los que retornen 0. La conversión a entero es sumamente necesaria para habilitar la lógica comparativa de números en el filtro de nivel de objeto visual que no funcionaría si fuera boolean (True/False).
+
+<br/></p><figure data-orig-width="181" data-orig-height="283"><img src="https://64.media.tumblr.com/152834dce08b28ca3b5f2fbe94a9be04/bc4b38213983b735-35/s540x810/f36cb1dbadf7dfb7d982023c16b6d9fae7290f35.png" alt="image" data-orig-width="181" data-orig-height="283"/></figure><p>De esta forma estamos logrando el mejor y más performante resultado. Si fuese el caso de tener más de una tabla de hecho, probablemente nuestro INT tendría dos condiciones NOT ISEMPTY separadas por un OR “||”.</p><p>¡Espero que les sea de utilidad para corregir varios modelos que tengan funcionando! ¡Dejemos de renegar con remodelar por sencillos pedidos!</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> June 28th, 2019 9:01am </span>
+                                                          <span class="tag">data modeling</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">DAX</span>
+                                          <span class="tag">power bi argentina</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

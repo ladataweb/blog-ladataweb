@@ -1,0 +1,75 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DAX] Time Intelligence vs WINDOW vs OFFSET</h1>
+                    <p>El mundo de DAX esta que arde con el lanzamiento de las funciones nuevas a fines del año 2022. Muchos posts en distintos blogs han aparecido mostrando muchos escenarios explicando las funciones nuevas. </p><p>La mayoría de los artículos intenta explicar las funciones. Este artículo va a pasar eso por alto y va a intentar comparar como responden las funciones de time intelligence con el código tradicional respecto a las nuevas funciones de DAX para resolver esos clásicos escenarios de fecha.</p>[[MORE]]<p>Antes de dar inicio al artículo vamos a dejar un enlace a la documentación de Microsoft de las nuevas funciones DAX 2022. De ésta forma podes interiorizarte con OFFSET y WINDOW antes de iniciar.</p><p><a href="https://learn.microsoft.com/es-es/dax/new-dax-functions" target="_blank">https://learn.microsoft.com/es-es/dax/new-dax-functions</a><br/></p><p>El análisis aplicado será realizado sobre un Adventure works en <b>modo importado</b>. Lo primero que vamos a hacer es aprender a construir algunos escenarios clásicos de Time Intelligence con las nuevas funciones. Veamos ejemplos para LY (Año Anterior), LM (Mes Anterior) y YTD (Año total meses acumulados).</p><p><b>Año Anterior (LY)</b></p><p>Normalmente para construir esta función podemos usar DATEADD o SAMEPERIODLASTYEAR. Veamos un ejemplo para una medida de [Net Price AC]</p><blockquote><p><code>
+
+Net Price LY = <br/></code><code>CALCULATE(<br/>    [Net Price AC]<br/>    , SAMEPERIODLASTYEAR(TablaFecha[Fecha])<br/>)</code></p></blockquote><p>Ahora veamos la traducción a las nuevas medidas.<br/>OFFSET</p><blockquote><p><code>
+
+Net Price LY OFF = <br/>CALCULATE(<br/>    [Net Price AC],<br/>    OFFSET(<br/>        -1,<br/>        ALL(TablaFecha[Año])<br/>    )<br/>) </code></p></blockquote><p>WINDOW</p><blockquote><p>
+
+<code>
+
+Net Price LY WIN = <br/>CALCULATE(<br/>    [Net Price AC],<br/>    WINDOW(<br/>        -1,REL,-1,REL,<br/>        ALL(TablaFecha[Año])<br/>    )<br/>)</code><br/></p></blockquote><p>
+
+De forma predeterminada cuando <b>no especificamos </b>valores de ORDERBY y PARTITIONBY, tomaría lo expresado en la tabla de relación. En este caso los valores distintivos de Año.
+
+<br/></p><p>En un rápido chequeo podemos apreciar todo acorde:</p><figure data-orig-width="1160" data-orig-height="255" class="tmblr-full"><img src="https://64.media.tumblr.com/a353247e7506361aa6cc44b80e1ed856/8ca5cf58c576d889-bd/s540x810/65fed308ace7676798ff848c7ea6352b51a2244c.png" alt="image" data-orig-width="1160" data-orig-height="255"/></figure><p><b>
+
+Mes Anterior (LM)</b></p><p>En estos casos podemos usar tanto DATEADD como PREVIOUSMONTH, sigamos nuestro ejemplo con Net Price AC </p><blockquote><p><code>
+
+Net Price LM = <br/>CALCULATE(<br/>    [Net Price AC]<br/>    , PREVIOUSMONTH(TablaFecha[Fecha])<br/>) </code><br/></p></blockquote><p>
+
+Ahora veamos la traducción a las nuevas medidas.
+<br/>OFFSET</p><blockquote><p>
+
+<code>
+
+Net Price LM OFF = <br/>CALCULATE(<br/>    [Net Price AC]<br/>    , OFFSET(<br/>        -1<br/>        , ALL(TablaFecha[Año], TablaFecha[IdMes], TablaFecha[Mes], TablaFecha[Periodo])<br/>        , ORDERBY(TablaFecha[Periodo])<br/>    )<br/>) </code><br/></p></blockquote><p>WINDOW</p><blockquote><p>
+
+<code>
+
+Net Price LM WIN = <br/>CALCULATE(<br/>    [Net Price AC],<br/>    WINDOW(<br/>        -1,REL,-1,REL,<br/>        ALL(TablaFecha[Año], TablaFecha[IdMes], TablaFecha[Mes], TablaFecha[Periodo]),<br/>        ORDERBY(TablaFecha[Periodo])<br/>    )<br/>) </code><br/></p></blockquote><p>La traducción esta vez es un poco más compleja. Requerimos más que solo año para poder hacerle entender al motor lo querepresenta un mes. Podemos usar el par Mes y IdMes o podemos usar Periodo. Yo expresé ambos para tener la libertad de que la medida funcione para ambas columnas llegado el caso de una visualización. El IdMes es el número de mes que da orden al nombre de mes. Por esa última razón es necesario incluirlo en la tabla relativa que vamos a explorar.<br/></p><p>Vistazo validando valores:</p><figure data-orig-width="1163" data-orig-height="286" class="tmblr-full"><img src="https://64.media.tumblr.com/8627b584b3266dbc30a7189551e102b4/8ca5cf58c576d889-2e/s540x810/db09a2ef9f67cf55d8cbf0f03b7ec249e74d8982.png" alt="image" data-orig-width="1163" data-orig-height="286"/></figure><p><b>Año total meses acumulados (YTD)</b><br/></p><p>Para este escenario vamos a usar la medida Quantity AC</p><blockquote><p>
+
+<code>
+
+Quantity YTD = <br/>CALCULATE(<br/>    [Quantity AC]<br/>    , DATESYTD(TablaFecha[Fecha])<br/>)</code><br/></p></blockquote><p>OFFSET. De momento no disponemos de una medida con esta función porque la función realiza un desplazamiento determinado para recuperar el valor de una fila y no para agregar o acumular un conjunto de filas. Puede que existan formas de ejecutar la acción pero seguramente requerirían acciones adicionales que hagan más compleja la resolución. Como estamos buscando la mejor forma para resolver esto, dudo que esta opción aplique.<br/></p><p>
+
+Ahora veamos la traducción a la nueva medida<br/>WINDOW</p><blockquote><p>
+
+<code>
+
+Quantity YTD WIN = <br/>CALCULATE(<br/>    [Quantity AC],<br/>    WINDOW(<br/>        1,ABS,0,REL,<br/>        ALL(TablaFecha[Año], TablaFecha[IdMes], TablaFecha[Mes], TablaFecha[Periodo]),<br/>        ORDERBY(TablaFecha[Periodo]),<br/>        PARTITIONBY(TablaFecha[Año])<br/>    )<br/>)</code></p></blockquote><p>La clave en esta oportunidad es que el acumulado comience al primer índice absoluto y termine en el actual relativo particionado por año. De este modo acumula valores desde el inicio de la partición hasta el último. <br/></p><p>Validamos la solución:</p><figure data-orig-width="737" data-orig-height="542" class="tmblr-full"><img src="https://64.media.tumblr.com/7539769c4a6702e4fec08f3abb621c32/8ca5cf58c576d889-b4/s540x810/7a947934a78b58a097fae58ddaac97c1daa10234.png" alt="image" data-orig-width="737" data-orig-height="542"/></figure><p>Ahora que todo se dispone de la mejor manera vamos a mediar la performance de nuestras medidas como sugiere SQLBI. Una página en blanco donde inicia nuestro PowerBi Desktop para tener todas las memorias cache limpias y recien prenderíamos el Performance Analyzer para ver los números de las visualizaciones en limpio.</p><p><b>LY</b></p><figure data-orig-width="633" data-orig-height="688" class="tmblr-full"><img src="https://64.media.tumblr.com/22b05272ae50f7e5c437dbdac8b69839/8ca5cf58c576d889-20/s540x810/ba59035c385e01b20a7e72a8bf9786c0c8f0ce29.png" alt="image" data-orig-width="633" data-orig-height="688"/></figure><p>Dentro del tiempo de cada visualización para LY podemos apreciar que no hay mucha diferencia en cuanto a performance, si bien demoró menos OFFSET en la totalización el detalle nos indica que DAX Query demora exactamente lo mismo para cada medida.</p><p><b>LM</b></p><figure data-orig-width="626" data-orig-height="652" class="tmblr-full"><img src="https://64.media.tumblr.com/de52e27577a42e120a0a505093f567de/8ca5cf58c576d889-5a/s540x810/7db8d65cdb7fe306d965619f5b11ccbb92b37b2f.png" alt="image" data-orig-width="626" data-orig-height="652"/></figure><p>Para lo que es el Mes ya tenemos una diferencia que se presenta más que nada por el abarcar columnas de Mes, IdMes y Periodo. Cuando hice la prueba con simplemente periodo los tres números estaban más cerca y menores a 30 en DAX Query. Seguía ganando TI (TimeIntelligence) por poco.</p><p><b>YTD</b></p><figure data-orig-width="625" data-orig-height="514" class="tmblr-full"><img src="https://64.media.tumblr.com/d5698e70ec1ea2e275361204084440f9/8ca5cf58c576d889-f8/s540x810/edf0ac2e1e5c910d0747a9b1ab8a19f9b129ad2a.png" alt="image" data-orig-width="625" data-orig-height="514"/></figure><p>Finalmente acumulando tampoco hemos encontrado grandes diferencias.</p><h2>Conclusión</h2><p>Las nuevas funciones tienen un gran poder para recorrer y traer valores de un contexto. Pueden buscar por indice o cantidad en un cierto orden. Son muy poderosas para escenarios de búsqueda bajo índices numéricos o de texto. Sin embargo, las nuevas funciones no son mejores ni funcionan mejor para escenarios tradicionales de fecha con un <b>conjunto de datos importado</b>. Las nuevas funciones<b> NO reemplazarían a las de Time Intelligence tradicionales</b> que venimos usando hace ya bastante tiempo.</p><p>Tengan cuidado en escenarios de Direct Query puesto que allí si se ha notado diferencia y Chris Webb lo demostró en <a href="https://blog.crossjoin.co.uk/2023/01/02/why-dax-window-functions-are-important-for-performance-in-power-bi-directquery-mode/" target="_blank">un artículo de su blog</a>.</p><p>Como siempre pueden encontrar el archivo de PowerBi Desktop de <a href="https://github.com/ibarrau/PowerBi-code/blob/master/PowerBi%20Reports/Window%20offset%20time%20intelligence.pbix" target="_blank">prueba en mi github</a>. Espero que les haya sido útil el análisis.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> February 7th, 2023 1:02pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">dax</span>
+                                          <span class="tag">dax tips</span>
+                                          <span class="tag">dax tutorial</span>
+                                          <span class="tag">dax training</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

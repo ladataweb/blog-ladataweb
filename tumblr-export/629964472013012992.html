@@ -1,0 +1,37 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi] Linaje de una medida</h1>
+                    <p>Power Bi ya tiene un buen tiempo en el mercado. Lo cual implica que en más de una oportunidad los analistas necesitamos partir desde un modelo previamente construido y no comenzar de 0 en un proyecto para iniciarlo.</p><p>Tomar un modelo previamente construido por otra persona, <strike>y a veces por nosotros también</strike>, suele ser algo complejo de entender a un primer vistazo. Si bien es cierto que debemos documentar, la realidad prueba que se hace poco e incompleto. A pesar de ello, es probable que seguir una documentación para develar el contenido de una medida nos sea complicado. Hoy vamos a ver como conocer el linaje de que usa y quienes usan la medida.</p>[[MORE]]<p>En esta oportunidad vamos a valernos de una herramienta que se conecta al modelo de Power Bi y puede salir en el menú de external tools como explique en un <a href="https://blog.ladataweb.com.ar/post/628694765244973056/powerbi-abrir-external-tools-conectadas-al" target="_blank">post anterior</a>. Tabular Model, entre varias características, puede ser muy cómodo para explorar y escribir código DAX. Ésta sencilla herramienta nos ayudará con la magia. Si no tiene la tienen configurada como external tool es probable que necesiten generar un archivo pbit template de su desktop para conectarse. Recomiendo configurar su Power Bi Desktop para permitir las external tools.</p><figure class="tmblr-full" data-orig-height="777" data-orig-width="1090"><img src="https://64.media.tumblr.com/8573f9fd499991b5d5cb4e5afc43ed34/6da1a56b4a5281f5-d9/s540x810/4cfb14d453221971a19f35fb67b0f52a680ea6a8.png" data-orig-height="777" data-orig-width="1090"/></figure><p>A partir de ese momento podremos utilizar Tabular Editor. Dentro del mismo vamos a la tabla deseada y la medida que necesitamos analizar. Podemos seleccionarla y tocar el shortcut F3 o click derecho para el menú de dependencias:<br/></p><figure class="tmblr-full" data-orig-height="928" data-orig-width="1092"><img src="https://64.media.tumblr.com/67c9e286a419aa1080c760614271d296/6da1a56b4a5281f5-f0/s540x810/255f8f5ec0ab402dc819538124260234ac1f939b.png" data-orig-height="928" data-orig-width="1092"/></figure><p>Esta opción nos devuelve una pequeña ventana con dos opciones disponibles. </p><p>1- <b>Show objects on which [Medida] depend</b>: con esta opción activa vamos a ver todas las medidas que se calcularon para llegar a la que estamos viendo. Por ejemplo, la siguiente imagen muestra que para calcular Venta promedio, se utilizaron las medidas monto venta y count of sales. Dentro de ellas las columnas involucradas para sus cálculos. Así sucesivamente todas las que se hayan utilizado.<br/></p><figure class="tmblr-full" data-orig-height="525" data-orig-width="500"><img src="https://64.media.tumblr.com/37f5fe75ee0e15a36ee4bcaee9c90814/6da1a56b4a5281f5-1b/s540x810/cb1cdd7a950730358cd545127d57b5484583ecd6.png" data-orig-height="525" data-orig-width="500"/></figure><p>2- <b>Show objects that depend on [Medida]</b>: ésta otra opción hará el camino contrario. Nos va a mostrar todas las medidas que utilizan la medida en la que nos posicionamos. Por ejemplo la medida Monto de Venta luego es utilizada por dos medidas, rentabilidad y venta promedio.</p><figure class="tmblr-full" data-orig-height="525" data-orig-width="502"><img src="https://64.media.tumblr.com/5604d33906d45f9a8e72756f304e7143/6da1a56b4a5281f5-9d/s540x810/4abb0a461042e2ac6193d98300d4224570af2eb1.png" data-orig-height="525" data-orig-width="502"/></figure><p>Gracias a la vista de dependencias de Tabular editor podremos seguir el hilo de las medidas creadas. La herramienta es de suma utilidad para dar soporte a medidas en grandes modelos como así también para comprender cálculos de un modelo que no hayamos creados.</p><p>Espero que les sea de utilidad y los ayude a comprender mejor el linaje de las medidas.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> September 22nd, 2020 10:22am </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">tabular model</span>
+                                          <span class="tag">tabular editor</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">dax</span>
+                                          <span class="tag">dax tips</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

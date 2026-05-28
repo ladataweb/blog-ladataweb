@@ -1,0 +1,81 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBI] Efecto visual sobre las cards para “rellenarlas” o “vaciarlas”</h1>
+                    <p>Hola, ¿cómo están? Soy Guido y trabajo en el
+área de BI en PI Data Strategy &amp; Consulting hace casi un año. A lo largo de
+los años me fui interesando más en los aspectos visuales y como, con algunos
+cambios y un poco de creatividad, podemos llamar la atención de los usuarios
+finales a la hora de crear nuestros reportes.<br/></p><p>En esta oportunidad les quiero compartir una
+técnica sencilla para jugar con las formas y poder generar un efecto de relleno
+sobre las cards de un tablero que tienen uno o mas elementos de un slicer
+seleccionado.</p>[[MORE]]<p>Para ir al ejemplo les doy un poco mas de
+contexto. En el siguiente slicer vas a ver varios ítems para elegir que están
+relacionados con cada una de las cards en forma de burbujas que veras después.</p><figure data-orig-width="1074" data-orig-height="732" class="tmblr-full"><img src="https://64.media.tumblr.com/783126852719997d3deb5a4f885d6b3b/fe3b958cf682a240-d1/s540x810/e1ae3ba76855e7f0ad42008cf21ff5e51cf877d5.png" alt="image" data-orig-width="1074" data-orig-height="732"/></figure><p>La idea de esto es generar un efecto que
+genere que las burbujas se rellenen, dejando las no seleccionadas vacías, de la
+siguiente manera:<br/></p><figure data-orig-width="1413" data-orig-height="231" class="tmblr-full"><img src="https://64.media.tumblr.com/ed00f1c153fa1675e64c8c1ffea91bbd/fe3b958cf682a240-3e/s540x810/cc23aa115787d5011e7c07b4fb93c6facf691116.png" alt="image" data-orig-width="1413" data-orig-height="231"/></figure><p>Estas burbujas las creé a partir de formas,
+dejando la visual adelante. Normalmente para generar un efecto de relleno tendríamos
+que crear una medida para el formato y configurarla en la parte del relleno de
+la forma. De esa forma podemos agregarle una condición para que responda y
+cambie de color en caso de que el ítem relacionado a esa card este
+seleccionado.<br/></p><p>Para ello podríamos crear, para cada card, una
+condición que valide si el ítem seleccionado corresponde a la card o no. Por
+ejemplo:</p><blockquote><p><code>Formato_seleccion_60_dias =<br/>
+VAR _filtro =<br/>
+    SELECTEDVALUE ( Partidas_Abiertas_CxP[Anticuacion] )<br/>
+RETURN<br/>
+    IF ( _filtro = "60 días", "#E6E6E6", "#FFFFFF00" )</code></p></blockquote><p>Y luego agregarlo como condición en el relleno
+de la forma.</p><figure data-orig-width="269" data-orig-height="302"><img src="https://64.media.tumblr.com/018b26a5de0f0805c6e0f43657d4d043/fe3b958cf682a240-85/s540x810/a4ae4ab259f91f766cdf9c1d4307ddf3f30a89f6.png" alt="image" data-orig-width="269" data-orig-height="302"/></figure><p>De esta manera podemos generar un efecto al
+tener seleccionada la opción de “60 días”</p><figure data-orig-width="1002" data-orig-height="430" class="tmblr-full"><img src="https://64.media.tumblr.com/81728fa16f7a37e2bce2263ced9fef7f/fe3b958cf682a240-86/s540x810/3308c7a54a70c3527d3f351ab76015919ef28acf.png" alt="image" data-orig-width="1002" data-orig-height="430"/></figure><h2>EL
+PROBLEMA</h2><p>Hasta ahí todo perfecto, el problema surge
+cuando hay más de una opción seleccionada.</p><p>La función SELECTEDVALUE resolvía bien el caso
+anterior donde solo había una opción seleccionada. El problema surge cuando hay
+más de una opción seleccionada.</p><p>Para eso vamos a explicar como funciona con un
+ejemplo:</p><p>Creamos una medida de filtro:   </p><blockquote><p><code>Filtro = SELECTEDVALUE ( Partidas_Abiertas_CxP[Anticuacion] )</code></p></blockquote><figure data-orig-width="827" data-orig-height="569" class="tmblr-full"><img src="https://64.media.tumblr.com/3fdae74403abde692a2cdc6beb8fed82/fe3b958cf682a240-0e/s540x810/912a5530319ba5d64bd67fa875a7a1aca0c2b234.png" alt="image" data-orig-width="827" data-orig-height="569"/></figure><p>Pero al seleccionar 2 o más ítems, la salida
+de filtro por defecto es BLANK(). Con lo cual esto no nos va a permitir rellenar
+más de una burbuja a la vez.</p><figure data-orig-width="779" data-orig-height="608" class="tmblr-full"><img src="https://64.media.tumblr.com/9c738379c115dbc7f54361ad27fd6ae6/fe3b958cf682a240-8e/s540x810/05754efa157a1ee6bcf45a0e1fd18386e8386c3a.png" alt="image" data-orig-width="779" data-orig-height="608"/></figure><h2>LA
+SOLUCIÓN</h2><p>Si queremos que funcione para más de una
+selección una solución posible es crear una medida utilizando la siguiente
+función:</p><ul><li>VALUES: La función VALUES la
+necesitamos para devolver una tabla con los valores distintos de esa columna.<br/><a href="https://learn.microsoft.com/es-es/dax/values-function-dax" target="_blank">https://learn.microsoft.com/es-es/dax/values-function-dax</a></li></ul><p>Siguiendo con el ejemplo, Vamos a crear tantas
+medidas de formato como valores tengamos dentro de ese filtro (en el caso del
+ejemplo son 5). Tiene que rellenar la burbuja (#E6E6E6) y sino dejarla
+transparente (#FFFFFF00). Una de las medidas que usamos para dar este formato es la siguiente:</p><blockquote><p><code>_formato_seleccion_anticuacion_60_dias =<br/>IF (<br/>    "60
+dias" IN VALUES (Partidas_Abiertas_CxP[Anticuacion])<br/>    , "#E6E6E6"<br/>    , "#FFFFFF00"<br/> ) </code></p></blockquote><p>Luego de crearla, la asignamos el tipo de dato
+como texto:</p><figure data-orig-width="1098" data-orig-height="197" class="tmblr-full"><img src="https://64.media.tumblr.com/b7ce735f11252fdc9394b3ff85f5e7cf/fe3b958cf682a240-3c/s540x810/97216ba6cb1b955bea953ccf00697d1c3f3032d5.png" alt="image" data-orig-width="1098" data-orig-height="197"/></figure><p>Y luego la configuramos como condición dentro
+del relleno de la forma:</p><figure data-orig-width="265" data-orig-height="310"><img src="https://64.media.tumblr.com/3b6761008518713cb4882b926fef8a6b/fe3b958cf682a240-1d/s540x810/538dad0c60f46bed8d9cdc4c91ae19543b2ca91e.png" alt="image" data-orig-width="265" data-orig-height="310"/></figure><p>
+ 
+</p><figure data-orig-width="1019" data-orig-height="240" class="tmblr-full"><img src="https://64.media.tumblr.com/1d44376e33920a8a729bd4a661c36c19/fe3b958cf682a240-64/s540x810/47ca608649ce591f1211799fa5ecddad1c32be1d.png" alt="image" data-orig-width="1019" data-orig-height="240"/></figure><p>Finalmente se puede ver que cada burbuja se rellena
+en función de la selección del campo</p><figure data-orig-width="974" data-orig-height="263" class="tmblr-full"><img src="https://64.media.tumblr.com/250b37e89853176bfaf13e65a7bc0438/fe3b958cf682a240-a7/s540x810/10a514acf35a0638c375614e5aa8b52fb5893253.png" alt="image" data-orig-width="974" data-orig-height="263"/></figure><p>Y cuando no hay filtro de anticuación
+seleccionado (all), rellena todas las burbujas:</p><figure data-orig-width="1185" data-orig-height="309" class="tmblr-full"><img src="https://64.media.tumblr.com/fa94f50e5ce7025c47492b7adf33d856/fe3b958cf682a240-46/s540x810/3ffb578f0c916fac15b93257dfb84086a4113b52.png" alt="image" data-orig-width="1185" data-orig-height="309"/></figure><p>Espero que les sirva el tip y puedan aplicarlo
+pronto. Les dejo un ejemplo de la solución en el <a href="https://github.com/PiConsulting/Pensadero/blob/master/Bi/Resoluciones/Efecto%20visual%20rellenar%20tarjeta%20multiple%20select%20slicer/Efecto%20visual%20usando%20slicers.pbix" target="_blank">Github público de Pi</a>.</p><p><i>Escrito por <a href="https://www.linkedin.com/in/guido-maroneo/" target="_blank">Guido Maroneo</a>,</i></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> November 8th, 2022 1:03pm </span>
+                                                          <span class="tag">PowerBi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">ladataweb</span>
+                                          <span class="tag">uxui</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

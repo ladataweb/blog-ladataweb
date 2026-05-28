@@ -1,0 +1,53 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi][DAX] DATEADD vs PARALLELPERIOD</h1>
+                    <p>Recientemente eh notado un incremento de consultas sobre comparaciones de fecha contra un periodo anterior. Si bien tenía pendiente realizar un post de esto, se me había pasado y ahora reflotó.</p><p>Comparar contra un periodo anterior en un contexto actual puede ser engañoso. La mayoría puede pensar que SAMEPERIODLASTYEAR lo resuelve todo y no tenemos que pensar más nada, pero lo cierto es que la correcta aplicación depende mucho del requerimiento, visualización y contexto.</p><p>Este pequeño artículo definirá el funcionamiento de las funciones más comunes para este escenario para entender cuando usar una u otra.</p>[[MORE]]<p>Normalmente puede que no veamos diferencia que nos represente un inconveniente cuando analizamos un gran histórico, puesto que la principal ocurrencia que podría corromper nuestros datos pasa por el contexto de filtros o un periodo “actual”. Veamos un poco de cada función para entender su diferencia.</p><blockquote><p><i>NOTA: Recordemos que para utilizar las funciones de inteligencia de tiempo necesitamos una tabla calendario o tabla fecha. Si no sabes como crear una puedes revisar <a href="https://blog.ladataweb.com.ar/post/185012464051/data-modeling-como-hago-una-tabla-fecha" target="_blank">este post</a>.</i></p></blockquote><h2>DATEADD</h2><p>Definición de Microsoft: <i>Devuelve una tabla que contiene una columna de fechas que se han desplazado hacia delante o hacia atrás en el tiempo según el número especificado de intervalos desde las fechas del contexto actual</i>.
+
+</p><blockquote><p><b>DATEADD(&lt;dates&gt;,&lt;number_of_intervals&gt;,&lt;interval&gt;)</b></p></blockquote><p>La clave en esto es la especificación que los intervalos bajo los cuales se moverá nuestra función está encasillado en el “contexto actual” de fechas. Esto significa que buscará para atras según nuestro periodo. </p><p>Para entender mejor nos vamos a basar en un clásico ejemplo de “mismo mes año anterior”. Generando un contexto de la siguiente forma:</p><blockquote><p><b>DATEADD( TablaCalendario[Fecha], -1, YEAR )</b></p></blockquote><p>¿Cómo funciona este contexto? Si tenemos seleccionado el año actual y mes de enero, nuestra medida con ese código representará el año anterior de enero. En este caso nuestor contexto es “enero”. Siempre representaría años de enero. </p><figure data-orig-width="684" data-orig-height="695" class="tmblr-full"><img src="https://64.media.tumblr.com/45596d52daf5971539473c8b105320d8/8d98f8fd47fe9849-a8/s540x810/a8aedfdc9f9d5e22c6ccb6b221b8ea1d9af245e2.png" alt="image" data-orig-width="684" data-orig-height="695"/></figure><p>Esto suena totalmente normal en un mes pasado, pero no sería el caso de un contexto actual a nivel de año. Lo que establecemos al escribir YEAR en nuestra función es aclarar que el contexto de meses y dias está atado hasta la fecha actual que tenga datos el contexto.</p><p>Por ejemplo hoy es 10 de noviembre del 2022. Eso significa que mi mes de noviembre 2022 solo tiene 10 días de datos y faltan 20. Al comparar contra un año debo tener presente eso, porque la función DATEADD comparará todo el año hasta el 10 de noviembre del 2021. Veamos una foto:</p><figure data-orig-width="543" data-orig-height="545" class="tmblr-full"><img src="https://64.media.tumblr.com/6fd77e5e1423dc1ba7e25456ed7734d0/8d98f8fd47fe9849-cd/s540x810/14f0be3275978baa3840d42c8dfd7b3b71b6cdd6.png" alt="image" data-orig-width="543" data-orig-height="545"/></figure><p>La tabla de la izquierda mes a mes nos provoca la sensación que todo lo que necesitamos es correcto y no tendríamos problemas. Sin embargo, la tabla de agrupación anual nos demuestra que el valor que reconoce la Medida LastYear para es incorrecta, dado que muestra 13418 en lugar de 14099. Esto ocurre porque el análisis 2021 frena su historia en la última fecha del 2022.</p><p>Esto no quiere decir que no sirva nuestra función, sino más bien que el tercer parémetro de la función controla que el contexto del periodo a analizar tiene como límite el hasta de nuestra fecha. Lo mismo ocurriría si comparamos noviembre usando en nuestro DATEADD el parámetro MONTH dado que compararía Octubre hasta el día 10.</p><p>Esto no es malo puesto que nos da una comparativa exacta de evolución entre años, pero hay que conocer la función que aplicamos.</p><h2>PARALLELPERIOD</h2><p>Definición de Microsoft: <i>Devuelve una tabla que contiene una columna de fechas que representa un período paralelo a las fechas de la columna dates especificada, en el contexto actual, con las fechas desplazadas un número de intervalos hacia delante o hacia atrás en el tiempo</i>.
+
+</p><blockquote><p><b>
+
+PARALLELPERIOD(&lt;dates&gt;,&lt;number_of_intervals&gt;,&lt;interval&gt;) 
+
+</b><br/></p></blockquote><p>Nuestra palabra clave aqui es período paralelo. Hace referencia a que se centrará en completar el contexto que definamos en la función independientemente de que tengamos datos hasta cierta fecha. Trabajaría hasta la granularidad definida en el tercer parámetro. </p><p>Entonces si usamos el mismo ejemplo de antes y completamos el contexto de esta forma:</p><blockquote><p>
+
+<b>PARALLELPERIOD( TablaCalendario[Fecha], -1, YEAR )</b>
+
+<br/></p></blockquote><p>Lo que especificamos en la función establece que desea traer del pasado años completos independientemente que el analizado en el momento (como el actual) esté completo. Veamos un ejemplo con las tablas recientes:</p><figure data-orig-width="913" data-orig-height="698" class="tmblr-full"><img src="https://64.media.tumblr.com/22fd05e06fbff27873429d699384fd8f/8d98f8fd47fe9849-13/s540x810/952bfd62e4fc8970e0194a4dcf04f64a3729cd0f.png" alt="image" data-orig-width="913" data-orig-height="698"/></figure><p>Podemos apreciar en la tabla pequeña que dicha función sería capas de establecer una consulta al periodo completo anterior independiente del contexto trabajado. Por ello llegamos al resultado esperado 14099.</p><p><b>Advertencia</b>: veamos también que la tabla grande tiene una particularidad. Al pedir el periodo año completo, estamos forzando un contexto de filtros de la mano de calculate. Lo que significa que generaría el año anterior completo independiente del mes en el que estemos posicionados.</p><h2>Y&hellip;. ¿SAMEPERIODLASTYEAR ?</h2><p>Definición de Microsoft: 
+
+<i>Devuelve una tabla que contiene una columna de fechas desplazadas un año atrás en el tiempo desde las fechas de la columna dates especificada, en el contexto actual. </i></p><p>En este caso de la famosa función muy usada, es una a partir de otra existente. Esto significa que por detrás funciona igual que otra función. En este caso al estar acotada a un año especifico las siguientes lineas generarían el mismo contexto:</p><blockquote><p><b>SAMEPERIODLASTYEAR ( TablaCalendario[Fecha] )</b><br/><b>DATEADD( TablaCalendario[Fecha], -1, YEAR )</b></p></blockquote><p>Pueden ver el funcionamiento de las imagenes y funciones en el ejemplo de Power Bi Desktop en <a href="https://github.com/ibarrau/PowerBi-code/blob/master/PowerBi%20Reports/DATEADD%20vs%20PARALLELPERIOD.pbix" target="_blank">mi Github</a>.</p><p>¡Eso es todo amigos! Como pueden ver es de suma importancia conocer estas diferencias entre funciones para responder adecuadamente según el contexto o la visualización en la  que lo usemos. Espero que esto los ayude a devolverl los números correctos en sus informes.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> January 25th, 2023 1:50pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">dax</span>
+                                          <span class="tag">power bi dax</span>
+                                          <span class="tag">dax tips</span>
+                                          <span class="tag">dax tutorial</span>
+                                          <span class="tag">dax training</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

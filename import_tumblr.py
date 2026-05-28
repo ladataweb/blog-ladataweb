@@ -46,7 +46,7 @@ def clean_body(soup):
             break
 
     html = "".join(str(node) for node in body.contents).strip()
-    html = html.replace("[[MORE]]", "")
+    html = html.replace("[[MORE]]", "<!--more-->")
     return html
     
 def escape_liquid_syntax(html):

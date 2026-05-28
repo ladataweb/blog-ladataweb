@@ -1,0 +1,77 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DAX] Contar clientes con N días desde su última compra</h1>
+                    <p>¡Hola a todos!
+Mi nombre es Nazarena Tossolini, trabajo como BI &amp; Analytics Consultant en
+Pi Data Strategy &amp; Consulting y en esta publicación les quiero compartir un
+caso particular que tuve que realizar hace unas semanas.</p><p><b>El objetivo consistía
+en detectar, para determinada semana seleccionada a partir de un slicer, la
+cantidad de clientes que en ese periodo cumplieran 90 días desde su última
+compra.</b></p><p>Para entenderlo
+mejor, veamos el ejemplo. </p>[[MORE]]<p>Como se observa
+en la imagen, la semana seleccionada es la del 15/04/2007, los días en que los
+clientes deberían haber comprado por última vez para cumplir los 90 días en ese
+periodo irían desde el 15/1/2007 al 21/1/2007. 
+</p><figure data-orig-width="422" data-orig-height="287" class="tmblr-full"><img src="https://64.media.tumblr.com/1a61190330570de007527ef66f5c92a0/c9625cb33aedf218-b5/s540x810/8e0419eb1dbb1a671e1e6ea4b838d884c53f6660.png" alt="image" data-orig-width="422" data-orig-height="287"/></figure><p><b></b></p><p>Ahora que ya
+tenemos el caso puntual, lo llevemos a nuestra DAX. Para eso necesitaremos:</p><ol><li>Determinar
+la última fecha en la que el cliente compró.</li><li>Calcular
+la cantidad de días que pasaron desde esa fecha hasta la última fecha de la
+semana seleccionada. </li><li>Finalmente,
+asignar un 1 en caso de que esa cantidad de días sea mayor o igual a 90 y menor
+o igual a 90 + la cantidad de días del periodo de la semana seleccionada.<br/>(Al 21/4/2007 aquellos clientes que compraron
+por última vez el 15/1/2007 cumplieron 96 días sin comprar).</li></ol><p>Veamos cada uno de los puntos anteriores en la siguiente medida:</p><blockquote><p>Clientes con 90d sin comprar =<br/>VAR _FechaFin =<br/>   LASTDATE (
+&lsquo;Date&rsquo;[Date] ) // Ultima fecha en la semana seleccionada<br/>VAR _FechaInicial =<br/>   FIRSTDATE (
+'Date&rsquo;[Date] ) // Primer fecha en la semana seleccionada<br/>VAR _DiasPeriodo =<br/>   DATEDIFF (
+_FechaInicial, _FechaFin, DAY ) // Cantidad de dias entre ambas fechas<br/>VAR _Dias
+=<br/>   DATEDIFF (<br/>       CALCULATE (<br/>           LASTDATE ( InternetSales[Delivery
+Date] ),<br/>           ALL ( 'Date&rsquo; ),<br/>           InternetSales[Delivery
+Date] &lt; _FechaFin<br/>       ),<br/>       // 1.Ultima
+fecha de compra del cliente, eliminando los filtros de fechas aplicados<br/>       _FechaFin,<br/>       DAY<br/>   ) //
+2.Diferencia en días desde la ultima compra a la ultima fecha de la semana
+seleccionada<br/>RETURN<br/>   IF ( _Dias &gt;= 90
+&amp;&amp; _Dias &lt;= 90 + _DiasPeriodo, 1, BLANK () )<br/>// 3.En caso de que los días se encuentren entre los
+valores establecidos devuelve 1 y si no blanco.</p></blockquote><p>Para ver los
+resultados cliente por cliente y comprobarlos, podemos ver las diferentes
+variables utilizadas en la DAX dentro de una tabla:</p><figure data-orig-width="423" data-orig-height="448" class="tmblr-full"><img src="https://64.media.tumblr.com/1197a31b0f4fc1480441ed836f320937/c9625cb33aedf218-3d/s540x810/21878ba387466bc65aa42c035ed6f3c0c24f4352.png" alt="image" data-orig-width="423" data-orig-height="448"/></figure><p>Sin embargo,
+el objetivo del usuario final es visualizar el total como valor dentro de una
+tarjeta. Entonces, dentro de nuestra última DAX sumaremos los valores de la
+medida, es decir, los clientes que tienen un valor igual a 1. </p><blockquote><p>Total de Clientes =<br/>SUMX (<br/>   ADDCOLUMNS (<br/>       VALUES ( Customer[CustomerKey] ) //Utilizar la clave principal de la dimension<br/>       , &quot;@Total&quot;, [Clientes con 90d sin comprar]<br/>   ),<br/>   [@Total]<br/>)</p></blockquote><p>El resultado
+final se vería de la siguiente forma:<br/>Para la semana
+seleccionada, un total de 42 consumidores hicieron su última compra hace 90
+días. </p><figure data-orig-width="409" data-orig-height="290" class="tmblr-full"><img src="https://64.media.tumblr.com/27ed29f22da5186d853eacde050ff3eb/c9625cb33aedf218-fc/s540x810/547d8307cd45ac7406f88b238e5cf88f3a849bcb.png" alt="image" data-orig-width="409" data-orig-height="290"/></figure><p>También pueden
+aplicar esta DAX para distintos filtros, periodos y fechas específicas como
+referencia. En este caso se construyó entre semanas y es por esa razón se usó la
+variable _DiasPeriodo para ajustar el rango de la semana. Esto no sería
+necesario si queremos ir exactamente contra 90 días seleccionando un día especifico. </p><p>¡Espero que
+esta breve explicación les sea de mucha utilidad en caso de que les toque
+realizar análisis similares!</p><p><i>Escrito por <a href="https://www.linkedin.com/in/nazarenatossolini/" target="_blank">Nazarena Tossolini</a></i></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> August 10th, 2021 1:01pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">dax</span>
+                                          <span class="tag">dax tips</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

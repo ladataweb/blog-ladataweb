@@ -1,0 +1,46 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[SimplePBI][Python] Copiar pbix entre áreas de trabajo</h1>
+                    <p>Hay ciertos procesos que son necesarios de acuerdo con circunstancias
+varias. Entre ellas suele aparecer una clásica situación en que un informe fue
+publicado por mucho tiempo en un área de trabajo que nunca debió estar ahí o
+simplemente cambio la estructura de la organización y ahora no debería estar ahí.</p><p>Por estas y muchas
+razones más, este artículo nos va a mostrar un método interesante de la
+librería de python para usar la Power Bi Rest API que nos ayudará a mover un
+.pbix de un área de trabajo a otra.</p>[[MORE]]<p>Para poder realizar esta acción con código nos vamos a nutrir de la Librería SimplePBI que construyó LaDataWeb, pero antes de salir y ver el código vamos a explicar como funciona.</p><p>Hoy por hoy el catálogo de consultas de la API no provee un método que nos permita copiar pbix pero si tenemos otros métodos que nos van a ayudar a llegar a este resultado. Para realizarlo serán necesarios los siguientes permisos:</p><blockquote><p>Report.ReadWrite.All and Dataset.ReadWrite.All</p></blockquote><p>Lo primero será determinar el ambiente en el cual escribir nuestro código para copiar los informes. Recomiendo usar un entorno cloud como una AzureVM, Azure Function, Automation Runbook, etc. Veamos porque es necesario y recomendado que sea cloud.</p><figure data-orig-width="819" data-orig-height="365" class="tmblr-full"><img src="https://64.media.tumblr.com/59f06db5b85f75179500039677dc4984/e6a8d77ffe1e4af0-b9/s540x810/bfa4ecc279690e32aa375b0981c77565632ee71b.png" alt="image" data-orig-width="819" data-orig-height="365"/></figure><p>Como podemos apreciar, al no existir un request nativo para esto, la forma de realizarlo será exportando y volviendo a importar el archivo pbix. Si nuestro entorno es local tendremos que descargarlo y subirlo, lo cual puede demorar bastante dependiendo del tamaño del archivo. Si utilizamos un entorno cloud podremos reducir bastante el tiempo que esta ajustado al ancho de banda local. </p><p>Nuestra librería contendrá el método que necesitamos bajo la categoría de “Reports”. La ejecución es bastante sencilla. Primero importamos los paquetes necesarios.</p><blockquote><p>from simplepbi import token<br/>from simplepbi import reports</p></blockquote><p>Inicializamos objetos por categorías para realizar acciones de forma más cómoda:</p><blockquote><p><code>
+
+t = token.Token(tenant_id, power_bi_client_id, power_bi_username, power_bi_password, None, use_service_principal=False )<br/>r = reports.Reports(t.token) </code></p></blockquote><p><i>NOTA: Recordemos que podemos crear nuestro token autenticando con service principal si ubicamos el con secret en donde vemos el None y cambiamos el último argumento use_service_principal=True</i></p><p>Una vez creado todo eso simplemente basta llamar el método con nuestros valores deseados.</p><blockquote><p><code>
+
+r.simple_copy_reports_between_groups(workspace_id_origin, report_id, workspace_id_destination, displayName=None, nameConflict="CreateOrOverwrite")</code></p></blockquote><p>Los argumentos son:</p><ul><li><b>workspace_id_origin:</b> área de trabajo de origen</li><li><b>report_id:</b> id del informe de origen para exportar e importar</li><li><b>workspace _id_destination:</b> área de trabajo de destino</li><li><b>displayName:</b> nombre deseado para el destino caso que querramos cambiar el nombre. Por defecto None le colocará el mismo que tenía en el origen.</li><li><b>nameConflict:</b> acción en caso de encontrar el mismo nombre, por defecto creara o reemplazará</li></ul><p><b><i>Restricciones: este método solo permite copiado de informes que contengan el conjunto de datos. No funciona con Live Connection.</i></b></p><p>Con esa sencilla línea habremos conseguido hacer la copia del informe. Esto podría ayudarnos a generar nuestro propio deploy entre distintos entornos de desarrollo de áreas de trabajo. Espero que les sea útil y lo disfruten. Sigan a SimplePBI por más métodos útiles armados con requests de la API. Quien sabe, tal vez un día tengamos uno para copiar entre distintos tenants.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> October 11th, 2022 1:25pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi rest api</span>
+                                          <span class="tag">power bi python</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">ladataweb</span>
+                                          <span class="tag">simplepbi</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

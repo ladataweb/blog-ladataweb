@@ -13,7 +13,7 @@ title: Blog
   </header>
 
   <div class="post-feed">
-    {% for post in site.posts %}
+    {% for post in paginator.posts %}
       <article class="post-card">
         <div class="post-card__meta">
           <time datetime="{{ post.date | date_to_xmlschema }}">
@@ -42,4 +42,20 @@ title: Blog
       </article>
     {% endfor %}
   </div>
+
+  {% if paginator.total_pages > 1 %}
+    <nav class="pagination" aria-label="Paginación">
+      {% if paginator.previous_page %}
+        <a class="pagination__link" href="{{ paginator.previous_page_path | relative_url }}">← Anterior</a>
+      {% endif %}
+
+      <span class="pagination__info">
+        Página {{ paginator.page }} de {{ paginator.total_pages }}
+      </span>
+
+      {% if paginator.next_page %}
+        <a class="pagination__link" href="{{ paginator.next_page_path | relative_url }}">Siguiente →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 </section>

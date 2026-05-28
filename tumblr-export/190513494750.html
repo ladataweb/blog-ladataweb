@@ -1,0 +1,34 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DataModeling] Días habiles o no laborales</h1>
+                    <p>En el mundo de bi hay un pedido muy frecuente y deseado por todos. El mismo es poder diferenciar los días hábiles de los no laborales o feriados para determinados conteos y cálculos.</p><p>En este artículo vamos a ver como trabajar con esta solución tan requerida. <b>Lo que debo advertir es que se trata de cómo modelar y no de como obtener los datos. </b>El enfoque del mismo es sobre data modeling a partir de los datos. Si no tienen los datos van a tener que generarlos a mano o encontrar la forma de extraerlos de algún sitio web / app. Les dejo un archivo de feriados 2020 en csv en mi <a href="https://github.com/ibarrau/PowerBi-code/blob/master/DatosPrueba/Feriados%20Argentina/Feriados2020.csv" target="_blank">github</a> sacados de la nación.</p>[[MORE]]<p>Bien lo primero que necesitamos es <b>comprender los datos</b>. Como ya habremos visto en nuestros posts anteriores vamos a generar una tabla fecha para trabajar con ellos. Si no recuerdas como generar una revisa mi antiguo post. </p><p>Ejemplo dimensión fecha:</p><figure data-orig-width="530" data-orig-height="272" class="tmblr-full"><img src="https://64.media.tumblr.com/81b1193f0a6a5a120b04e7ad4cde8062/5b29652d68f485af-90/s540x810/7552a677fd23a8c8d1bb44567b6f7ab6dee33810.png" alt="image" data-orig-width="530" data-orig-height="272"/></figure><p>Para poder realizar el análisis de días es necesario tener otra tabla fecha que contendrá los días laborales o no laborales.</p><p>Ejemplo hábiles o laborales:</p><figure data-orig-width="152" data-orig-height="183"><img src="https://64.media.tumblr.com/77e6fb923dd8be041e672121da427ff2/5b29652d68f485af-a7/s540x810/842d9a28a2145036af6508c4d18af8bce97448b6.png" alt="image" data-orig-width="152" data-orig-height="183"/></figure><p>Ejemplo no laborales:</p><figure data-orig-width="242" data-orig-height="125"><img src="https://64.media.tumblr.com/3fe3bb9fbfaa77f2b307eea4425999b7/5b29652d68f485af-65/s540x810/ee6cd3b3db6eaa85acecae0cf9c77afe40cdc8f6.png" alt="image" data-orig-width="242" data-orig-height="125"/></figure><p>Con ésta información vamos a darle un remodelado a nuestra dimensión fecha. Cabe destacar que <b>mientras más temprano hacemos nuestras combinaciones mejor</b>. Me refiero a que apliquemos el data modeling según esta lista de prioridades en la medida que nos sea posible:</p><ol><li>Motor de Base de datos</li><li>Power Query (editor de consulta)</li><li>DAX</li></ol><p>Para cualquiera de estos casos la idea es poder hacer un <a href="https://blog.ladataweb.com.ar/post/184457802605/confusi%C3%B3n-join-de-tablas" target="_blank">LEFT JOIN</a> sobre la dimensión fecha inicial con nuestro ejemplo de días laborales o no laborables para crear una nueva columna que nos ayude a identificar dicha fecha. El resultado final sería algo semejante a la siguiente imagen.</p><figure data-orig-width="629" data-orig-height="272" class="tmblr-full"><img src="https://64.media.tumblr.com/5cd0ac0c7c033b457afe75189faf5d7f/5b29652d68f485af-50/s540x810/cb20d04862a7db2cfd5f183b73dde4480f2c9d18.png" alt="image" data-orig-width="629" data-orig-height="272"/></figure><p>De esta manera los cálculos que necesitemos aplicar mediante dax serían sencillamente filtrados por el valor de una columna en la dimensión fecha. Tengan en cuenta que, si bien ésta es la mejor forma, no es la única forma.</p><p><b>Consideraciones:</b> a menos que sepan de donde extraer los datos la tabla de no laborales tendría que se generada manualmente por alguna persona. Power query podría ayudarnos a reconocer los días sábados y domingos automáticamente pero si queremos tener cuenta los feriados, si o si deberías cargarla a mano o escrapearlos. Por este año están cubiertos con el archivo que deje pero para la historia o los próximos están por su cuenta.</p><p>¡Espero que pronto hagan su tabla de feriados y días no laborales para poder calcular medidas con éste requerimiento!</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> January 28th, 2020 10:03am </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">data modeling</span>
+                                          <span class="tag">data model</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi latam</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

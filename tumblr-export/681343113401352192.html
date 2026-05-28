@@ -1,0 +1,84 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi] Documentar tu informe dentro del informe</h1>
+                    <p>Una vez
+escuche una frase, que dice &ldquo;si tenés que explicar un chiste, entonces es
+porque lo contaste mal&rdquo;. Algo similar sucede al momento de crear un
+dashboard. Debemos buscar la manera de que cualquier persona pueda entenderlo
+sin la necesidad de mucha explicación. Todo nuestro trabajo siempre va dirigido
+a un público en particular que tiene conocimiento del negocio y de los datos
+que mostramos, por lo cual, para ese público resulta fácil entenderlo.<br/></p><p>Sin embargo,
+muchas veces nos encontramos ante la necesidad de dar un poco de explicación,
+ya sea a través de texto, un ícono, un manual de como leer y usar el reporte,
+etc. </p><p>Este post
+habla sobre cómo llevar a cabo estas &ldquo;explicaciones&rdquo; en Power Bi.</p>[[MORE]]<h2><b>Boton de Ayuda</b></h2><p>Les propongo
+dos posibles soluciones.</p><p>1) Por un lado, lo
+que podemos hacer es crear una aplicación en Power Bi service, y desde ahí se
+puede utilizar una página de nuestro reporte como “ayuda”, ya sea con un
+screenshot o simplemente con un texto explicativo de que hace cada medida, que
+muestra cada visualización o como leer nuestro reporte.</p><figure data-orig-width="160" data-orig-height="286"><img src="https://64.media.tumblr.com/03a46568ca04373fd76d9dc5d6f4db5f/875355aceece3d07-b6/s540x810/934f307cf1214b8dc897c8e6b90dc817f315d25e.png" alt="image" data-orig-width="160" data-orig-height="286"/></figure><p>En este ejemplo, les muestro un apartado de los dashboards
+publicados en la sección de apps, donde el dashboard Reporte de ejemplo,
+incluye una página “Menu de ayuda”, que sirve de guía para los usuarios.</p><figure data-orig-width="1918" data-orig-height="858" class="tmblr-full"><img src="https://64.media.tumblr.com/8bfd1206e49321cfe6c8f72699c453ba/875355aceece3d07-42/s540x810/aba31978feaa256168e3f2eec2bfa2a0a0b4fa44.png" alt="image" data-orig-width="1918" data-orig-height="858"/></figure><p>2) Por otro lado, utilizando
+cualquier herramienta de diseño (Figma, PowerPoint, Photoshop, etc.) podemos
+aplicar la siguiente técnica para poder explicar el diseño de nuestro
+dashboard.</p><p><b>Veamos entonces&hellip;</b></p><p>Primero necesitamos
+tener nuestro dashboard listo, tener creado un botón de ayuda y utilizar
+bookmarks.</p><figure data-orig-width="1913" data-orig-height="1052" class="tmblr-full"><img src="https://64.media.tumblr.com/7dc7dcafb80cdd50c1749fa1902e4fac/875355aceece3d07-a3/s540x810/7b5a9c125d5288e2292e86baf9d3fddae240cb41.png" alt="image" data-orig-width="1913" data-orig-height="1052"/></figure><p>Con el uso de
+los bookmarks y las características de los botones vamos a simular el efecto de
+“on hover” para que el botón cambie de color al pasar el mousse encima y darle
+un terminado más profesional. </p><figure data-orig-width="1236" data-orig-height="325" class="tmblr-full"><img src="https://64.media.tumblr.com/b7886d1e8f791c2c85b983c74f5241cd/875355aceece3d07-c2/s540x810/a5fa7444d799a2746980e699df19108b786d36f5.png" alt="image" data-orig-width="1236" data-orig-height="325"/></figure><p>Luego vamos a
+realizar un print de pantalla de nuestro dashboard y lo vamos a llevar a un
+programa para poder editarlo. En este caso en particular está realizado en
+Figma, pero recuerden que puede hacerse en cualquier herramienta.</p><figure data-orig-width="1866" data-orig-height="1044" class="tmblr-full"><img src="https://64.media.tumblr.com/0654672e6e0144f77f5d6d7c371d8151/875355aceece3d07-44/s540x810/6a7b4232dcfdc067741cfbd9b72ef2137cffcd1a.png" alt="image" data-orig-width="1866" data-orig-height="1044"/></figure><p>Vamos a crear
+un recuadro (de cualquier color), en este caso utilice un color celeste oscuro
+y con una transparencia de un 50%. Desde este punto, lo que vamos a realizar en
+la herramienta de diseño, es crear “cuadros de diálogo” que incluyen el texto
+explicativo de la descripción del dashboard, consejos sobre cómo leer los
+datos, explicación sobre acrónimos, etc.</p><figure data-orig-width="1346" data-orig-height="797" class="tmblr-full"><img src="https://64.media.tumblr.com/5bc5b61bc83f306eafff1b3131827603/875355aceece3d07-7b/s540x810/2af6715e751262055692443be5126cc0535af9b5.png" alt="image" data-orig-width="1346" data-orig-height="797"/></figure><p>Luego vamos exportar o
+guardar la imagen del recuadro con los textos explicativos, en formato png y lo
+vamos a superponer al print de nuestro dashboard, de la manera siguiente: </p><figure data-orig-width="1913" data-orig-height="1076" class="tmblr-full"><img src="https://64.media.tumblr.com/d8f7ea7fb6d0ab3c5e77a1e1ca686209/875355aceece3d07-e5/s540x810/fa86c246bfd97a1c228980dfa63d19bbaebd737d.png" alt="image" data-orig-width="1913" data-orig-height="1076"/></figure><blockquote><p>NOTA: Recuerden que
+una vez que inserten la imagen en Power Bi, es necesario determinar un
+porcentaje de transparencia adecuada para que no se vea solamente la imagen y
+se pueda apreciar el dashboard en el fondo. Si pueden notar, dejamos el botón
+de ayuda seleccionado con un color distinto (en este caso, blanco) para que el
+usuario sepa que se encuentra en un “menú” de ayuda. </p></blockquote><p>Como ya
+sabemos, es necesario darle una acción a los botones y con el uso de los
+bookmarks generamos este menú de ayuda, que se hace visible únicamente al hacer
+click en el botón.</p><figure data-orig-width="73" data-orig-height="73"><img src="https://64.media.tumblr.com/ea4a8d0d49fbe52a130d00aab5f2fa6d/875355aceece3d07-a2/s540x810/3dc5625171c2bc883906beed270e01880c8527e9.png" alt="image" data-orig-width="73" data-orig-height="73"/></figure><p>Los invito
+ahora a que comiencen a aplicar estos conceptos para ir mejorando la
+interacción de los usuarios con sus tableros y aplicaciones. Recuerden que no
+hace falta ser un experto en diseño para innovar y ser creativos en sus reportes
+y que ésta técnica se puede realizar tanto en Power Point, Paint, Photoshop
+como con cualquier otra herramienta.</p><p>Esto fue todo
+y espero les haya gustado, como siempre se agradece la oportunidad a LaDataWeb de
+compartir conocimientos y experiencias del día a día.</p><p><i>Escrito por <a href="https://www.linkedin.com/in/bruno-javier-zurita-590104121/" target="_blank">Bruno Zurita</a></i></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> April 12th, 2022 1:03pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi ux</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

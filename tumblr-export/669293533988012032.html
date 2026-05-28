@@ -1,0 +1,53 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>Librería de Python para Power Bi Rest API</h1>
+                    <p>Hace unos días me embarque en un proyecto que vi que muchos en distintas comunidades dejaron a la mitad. Se trata de construir una librería en lenguaje Python para usar comodamente la Power Bi Rest API.</p><p>Dicha librería sería de suma utilidad para administradores de Power Bi como así tambien para Data Engineers, desarrolladores e incluso para cuestiones de gobernanza o automatización.</p><p>Si queres conocer más de la librería, seguí leyendo.</p>[[MORE]]<p>En este artículo vamos a ver el simple uso de la librería para poder nutrirnos de ella. Para aquellos que ya estén familiarizados con Python podría resultar más sencillo.</p><p>Primero que nada necesitamos instalar el paquete. El mismo está publicado en pypi para su sencilla instalación: <a href="https://pypi.org/project/SimplePBI/#history" target="_blank">https://pypi.org/project/SimplePBI/</a> <br/>Recordemos que las librerías en este sitio pueden ser instaladas con el comando:</p><blockquote><p>
+
+<code>&gt; pip install simplepbi</code> </p></blockquote><p>La librería esta compuesta en varias clases. La idea es que cada clase corresponda a una categoría de API de Power Bi. </p><figure data-orig-width="447" data-orig-height="685" class="tmblr-full"><img src="https://64.media.tumblr.com/4da6b191b2afb6f125053fca90017a5f/9838fb361eda34fa-84/s540x810/fe8f506b06a99a93b5ade33187a7eab5f1461af4.png" alt="image" data-orig-width="447" data-orig-height="685"/></figure><p>Poco a poco el desarrollo irá incluyendo más y más hasta incluir a todas. Podremos ver en el sitio que pase antes, o <a href="https://github.com/ladataweb/SimplePBI" target="_blank">en el source dentro de ese sitio</a>, aquellas categorías que ya fueron desarrolladas para estar al tanto de lo que la librería puede hacer estos días.</p><p>Junto con ellas existen una clase más llamada Token que nos ayudará con la autenticación de la API. También hay un set de métodos bajo Utils para transformaciones comunes para moldear respuestas de la API, como llevar el dict a otro formato.</p><p>A pesar de estar utilizando una librería, esto no nos quita ciertas configuraciones y toma de datos para poder utilizarla. Con esto me refiero a que para usar la API de Power Bi necesitamos registrar una app en el portal de azure con los permisos deseados. <b>Dependerá de los permisos asignados el funcionamiento de los métodos en la librería.</b></p><p><i>El artículo no esta enfocado en mostrar la configuración del registro de la app, <strike>lo podemos encontrar en google</strike>, pero si dejaremos este enlace a la documentación y comunidad:</i></p><ul><li><a href="https://docs.microsoft.com/en-us/power-bi/developer/embedded/register-app?tabs=customers%2CAzure" target="_blank"><i><a href="https://docs.microsoft.com/en-us/power-bi/developer/embedded/register-app?tabs=customers%2CAzure" target="_blank">https://docs.microsoft.com/en-us/power-bi/developer/embedded/register-app?tabs=customers%2CAzure</a></i></a></li><li><a href="https://carldesouza.com/how-to-register-an-azure-app-to-use-with-power-bi/" target="_blank"><i><a href="https://carldesouza.com/how-to-register-an-azure-app-to-use-with-power-bi/" target="_blank">https://carldesouza.com/how-to-register-an-azure-app-to-use-with-power-bi/</a></i></a></li></ul><p>Ya teniendo todo creado podremos usar la API. Veamos que valores necesitamos para conectarnos y pedir un token. Lo primero importar la clase de la librería para crear un objeto token.</p><blockquote><p><code>from simplepbi import token</code></p></blockquote><p>Para construirlo necesitamos los clásicos valores de la autenticación de Azure</p><ul><li>tenant_id (lo puede pedir al administrador de IT o tomarlo del recurso Subscripción en el portal de azure)</li><li>app_client_id (app_id o client_id se obtiene de la aplicación registrada. Si vamos a utilizar Service Principal sería buena idea agregarla a las areas de trabajo en las cuales queremos interactuar)</li><li>username (cuenta de correo profesional de Azure AD)</li><li>password (password)</li><li>app_secret_key (secret key generado para el client id)</li><li>use_service_principal (True para utilizar la autentiación de Service Principal permitiendo no completar usuario y contraseña. False para seguir con la credenciales)</li></ul><blockquote><p>
+
+<code>tok = token.Token(tenant_id, app_client_id, username, password, None, use_service_principal=False)</code>
+
+<br/></p></blockquote><p>La clase token cuenta con un atributo Token que nos ayudará a obtener una gigantezca cadena de texto que sería quien ayude a crear los objetos de categoría de API para colocarlo al crearlos y luego solamente usarlos.</p><blockquote><p>
+
+<code>from simplepbi import admin<br/>ad = admin.Admin(tok.token)</code>
+
+<br/></p></blockquote><p>De este modo creamos un objeto de una categoría, en este caso admin, para poder utilizar todos los requests de admin con el objeto “ad” sin necesidad de ninguna otra configuración posterior.</p><p>Cabe destacar que para utilizar la categoría admin necesitamos usar una cuenta administradora de Power Bi o nuestro tenant en Service debe tener permitido el uso de Service Principal para API en la configuración de inquilinos del portal de administración. Más información: <a href="https://docs.microsoft.com/en-us/power-bi/admin/read-only-apis-service-principal-authentication" target="_blank">https://docs.microsoft.com/en-us/power-bi/admin/read-only-apis-service-principal-authentication</a></p><p>El resto es muy sencillo simplemente usar el objeto y llamar los requests como:</p><blockquote><p>
+
+<code>All_Datasets = ad.get_datasets()</code></p></blockquote><p>Así creariamos una variable con un diccionario de python que contiene todos los datasets.</p><p>La librería cuenta con una sección de documentación en github que nos ayudaría a realizar requests complejos como la toma de actividades o la scanner api. Además de las pequeñas incorporaciones de Utils como el caso de to_pandas() que nos ayudaría a transformar ese resultado de datasets en un DataFrame de la siguiente manera:</p><blockquote><p>
+
+<code>from simplepbi import utils<br/>utils.to_pandas(All_Datasets, "value")</code>
+
+<br/></p></blockquote><p>Así llegamos a presentar este pequeño proyecto sin fines de lucro de parte de unos pocos con ganas de contribuir a la comunidad. Seguramente irá mejorando en el tiempo los errores a medida que sean informados o encontrados. Recuerden chequear el github para conocer que categorías fueron agregadas a la librería para su posterior uso. <br/></p><p>Ojalé que les sea útil para lo que necesiten.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> November 30th, 2021 1:00pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi rest api</span>
+                                          <span class="tag">python</span>
+                                          <span class="tag">python power bi</span>
+                                          <span class="tag">power bi python</span>
+                                          <span class="tag">python libraries</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">python argentina</span>
+                                          <span class="tag">python cordoba</span>
+                                          <span class="tag">python jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

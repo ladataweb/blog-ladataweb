@@ -1,0 +1,99 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi] Obtener datos de Microsoft Forms</h1>
+                    <p>Hola comunidad! Soy
+Facundo Montenegro, Colaboro como BI &amp; Analytics Consultant en la empresa
+Pi Data Strategy &amp; Consulting y me especializo en el uso de Power BI.<br/></p><p>Hace un tiempo me tocó
+trabajar con un origen de datos de Microsoft Forms. El mismo era un cuestionario
+al cual debía conectarme con Power BI para desarrollar un modelo de BI. Si bien
+la conexión fue relativamente sencilla y pude desarrollar el modelo
+correctamente, al momento de publicarlo no fue posible configurar el refresco. Después
+de investigar en distintos foros, comunidades y hasta contactar al equipo de
+Microsoft llegué a la conclusión que existe solamente una forma de hacerlo
+correctamente hasta el momento y es sencilla.</p><p>En este post les voy a
+enseñar como conectar correctamente un origen de datos de Microsoft Forms a
+Power BI y no padecer a la hora de configurar el refresco automático. Dicho de
+otra forma “Como conectar correctamente tu origen de Microsoft Forms a Power Bi
+y no morir en el refresco”.</p>[[MORE]]<p><b>Generar el archivo Excel Desde Microsoft Forms</b></p><figure data-orig-width="257" data-orig-height="178"><img src="https://64.media.tumblr.com/163e172140a1b2f455a4fcc158874404/a0e8d6103420e5b0-0f/s540x810/05a0e23b2ae9d198239387d2a51dbe67b3a9a259.png" alt="image" data-orig-width="257" data-orig-height="178"/></figure><p>Supongamos que estamos
+en la Home de Microsoft Forms y tenemos nuestro cuestionario al cual queremos
+conectarnos desde Power BI. Hacemos clic y abrimos el mismo.</p><figure data-orig-width="624" data-orig-height="243" class="tmblr-full"><img src="https://64.media.tumblr.com/48d1c526bdd3b741eebee4a97c22330a/a0e8d6103420e5b0-c2/s540x810/bc698b20f84db18d03110fb22548c8b4e2fd65b7.png" alt="image" data-orig-width="624" data-orig-height="243"/></figure><p>Veamos que en la
+solapa “Responses” Podemos acceder a un botón que dice “Open in Excel”</p><p>El mismo nos permite
+descargar el archivo Excel y conectarnos a Power BI aunque, si bien esto puede
+funcionar si necesitamos extraer información una sola vez, no sería el método
+efectivo si necesitamos que esta información se vaya actualizando cada vez que
+ya una nueva respuesta en el cuestionario. </p><figure data-orig-width="198" data-orig-height="225"><img src="https://64.media.tumblr.com/7aa5d2beb5f32b23c5f837108b1d3125/a0e8d6103420e5b0-45/s540x810/63f039af8b7f4bc1c8ac092ffaefe6f98e1539bf.png" alt="image" data-orig-width="198" data-orig-height="225"/></figure><p>Por lo anterior,
+debemos volver nuevamente al Home de nuestro cuestionario, hacemos clic en el
+botón que tiene los tres puntos suspensivos y seleccionamos la opción “Move”,
+esto nos desplegara un grupo de trabajo dónde vamos a alojar nuestro
+cuestionario.</p><figure data-orig-width="624" data-orig-height="336" class="tmblr-full"><img src="https://64.media.tumblr.com/18662828e6572e000e2a5895c52b549f/a0e8d6103420e5b0-13/s540x810/cd239a080046efe5536434834221a5f3fc2fdbc9.png" alt="image" data-orig-width="624" data-orig-height="336"/></figure><p>Seleccionamos el grupo
+en el cual queremos que se genere el archivo Excel del cuestionario y hacemos
+clic en “Mover”.</p><figure data-orig-width="420" data-orig-height="229" class="tmblr-full"><img src="https://64.media.tumblr.com/2941ddb5619dabed9288ca0b04685dea/a0e8d6103420e5b0-56/s540x810/37055871e82f98ca93f16bbfdb660d81047dedfd.png" alt="image" data-orig-width="420" data-orig-height="229"/></figure><p>Notamos que ahora
+nuestro formulario está en un grupo colaborativo de Sharepoint o OneDrive,
+hacemos clic sobre ese grupo.</p><figure data-orig-width="304" data-orig-height="256" class="tmblr-full"><img src="https://64.media.tumblr.com/16d138d9b3b54b12a09626afc715f389/a0e8d6103420e5b0-5e/s540x810/2c712d4a3215693bac12fc2eeb6c78d08b686158.png" alt="image" data-orig-width="304" data-orig-height="256"/></figure><p>Podemos ver que
+nuestro formulario esta en este grupo pero una vez que lo abrimos vamos a notar
+algo diferente…</p><figure data-orig-width="624" data-orig-height="243" class="tmblr-full"><img src="https://64.media.tumblr.com/9bf05eaa80aafa70ce3615c302a838ee/a0e8d6103420e5b0-dc/s540x810/c2c75a7599667a5101318628374ae4219abc7c84.png" alt="image" data-orig-width="624" data-orig-height="243"/></figure><p>Si hacemos clic en “Abrir
+en Excel” ahora, se creará un archivo que estará disponible online en el
+directorio del grupo para poder colaborar en grupo. <b>¡Pum!</b> Este es el
+gran diferencial con respecto a la forma anterior de abrirlo de manera local ya
+que, al poder conectarme de manera online, este cuestionario podrá actualizarse
+a medida que se carguen respuestas.</p><p><b>Hay alternativas
+para conectarse? Sí. Pero, Son efectivas a la hora de configurar el refresco? No,
+y lo podemos ver con un ejemplo.</b></p><figure data-orig-width="624" data-orig-height="33" class="tmblr-full"><img src="https://64.media.tumblr.com/da835b4c32f3176e70c82c6f8f8853e0/a0e8d6103420e5b0-cd/s540x810/233c880e21b9f120e96dda5f0c7b18cec8a597ff.png" alt="image" data-orig-width="624" data-orig-height="33"/></figure><p><b></b></p><p>Una posibilidad es
+tomar el Id del formulario e invocarlo en una blank query en Power Query como
+la siguiente:</p><blockquote><code><p>= (idFormulario as text, idminimo as
+text,  idmaximo as text)=&gt;</p><p>let<br/>   Source =
+Excel.Workbook(Web.Contents("https://forms.office.com/formapi/",[RelativePath="DownloadExcelFile.ashx?formid="&amp;idFormulario&amp;"&amp;minResponseId="&amp;idminimo&amp;"&amp;maxResponseId="&amp;idmaximo])),<br/>   Table1_Table =
+Source{[Item="Table1",Kind="Table"]}[Data]<br/>in<br/>Table1_Table</p></code></blockquote><p>IdFormulario será
+nuestro formulario, idminimo es un parámetro de mínimo de respuestas y idmaximo
+es un parámetro de máximo de respuestas. Y la pregunta es, funciona? Sí! Podremos
+conectarnos correctamente a nuestro origen de datos y desarrollar nuestro
+reporte pero, cuando lo publiquemos e intentemos configurar el refresco en
+Power BI Service sucederá algo como esto…</p><figure data-orig-width="237" data-orig-height="245"><img src="https://64.media.tumblr.com/1c90da0760acf20e8031f2594d906f53/a0e8d6103420e5b0-06/s540x810/1bb0c0c67051834eb93b208fdcfc6781a4599030.png" alt="image" data-orig-width="237" data-orig-height="245"/></figure><p>Ni habiendo separado
+en parámetros nuestra función puede autenticar la API de Forms con el protocolo
+OAuth2 de Microsoft, sin duda es un problema y no lo sabremos hasta publicar
+nuestro reporte por lo que, se recomienda utilizar la primera forma.<br/></p><p><b>Conectar Microsoft Forms a Power BI</b></p><p>Finalmente, y luego de
+haber elegido el camino sencillo, podemos conectar nuestro Cuestionario de
+Microsoft Forms en Power BI. Cómo? Muy sencillo! Ya fue explicado antes en <a href="https://blog.ladataweb.com.ar/post/185337134590/alternativa-para-conectar-power-bi-a-onedrive" target="_blank">otro post de ladataweb</a> pero de todas formas vamos a repasarlo.</p><p>Abrimos el Excel que
+creamos desde el cuestionario de Microsoft Forms</p><figure data-orig-width="590" data-orig-height="268" class="tmblr-full"><img src="https://64.media.tumblr.com/e953becceed8403d97b03b872aaae77c/a0e8d6103420e5b0-da/s540x810/93c10201548579f9818b6fe8a8b7aafbcc8a45a0.png" alt="image" data-orig-width="590" data-orig-height="268"/></figure><p>Haremos clic en
+“Archivo” -&gt; “Información” -&gt; “Abrir en la aplicación de escritorio”. De
+este modo, lograremos abrir Excel en nuestra app de escritorio.</p><figure data-orig-width="388" data-orig-height="151" class="tmblr-full"><img src="https://64.media.tumblr.com/c256633b2d5b3f7e6bd786f748ce06c0/a0e8d6103420e5b0-48/s540x810/46e1d74826b569b38d710ac80792aee5ea92c2bf.png" alt="image" data-orig-width="388" data-orig-height="151"/></figure><p>Una vez dentro del
+archivo en la app local, haremos clic en 
+“File” -&gt; “Info” -&gt; “Copy path” y luego cerraremos este archivo
+local.</p><figure data-orig-width="400" data-orig-height="264" class="tmblr-full"><img src="https://64.media.tumblr.com/e9b9e97f7d6e204293184f7283c7cdac/a0e8d6103420e5b0-84/s540x810/ab6d686e8233d4855bd93797a40457315acca904.png" alt="image" data-orig-width="400" data-orig-height="264"/></figure><p>Luego, abrimos nuestro Power BI e iremos “Get
+Data” y seleccionamos  “More” para
+obtener más orígenes. Luego elegimos el tipo “Web”</p><figure data-orig-width="380" data-orig-height="137" class="tmblr-full"><img src="https://64.media.tumblr.com/a62b0e84ec69afa35315722d55f5b704/a0e8d6103420e5b0-46/s540x810/b4db02af5d643e1fb86d579db3593dfc2b106d03.png" alt="image" data-orig-width="380" data-orig-height="137"/></figure><figure data-orig-width="298" data-orig-height="123"><img src="https://64.media.tumblr.com/77c5c30952582397c4f2b80fb21dee2a/a0e8d6103420e5b0-05/s540x810/f7e6f664a8e4d394ff7a8a60d907afec987b70f6.png" alt="image" data-orig-width="298" data-orig-height="123"/></figure><p>Finalmente, pegamos la
+ruta copiada del archivo Excel de escritorio borrando la parte “?web=1”  y hacemos clic en “Ok” , con esto podemos
+autenticar con nuestra organización y obtener el origen de datos.</p><p>¡Listo! Con esto ya
+podemos empezar a desarrollar nuestro modelo sin correr riesgos en la
+configuración del refresco y teniendo plena seguridad que el mismo será
+actualizado correctamente en Power BI Service.</p><p><i>Escrito por <a href="https://www.linkedin.com/in/facundo-montenegro1/" target="_blank">Facundo Montenegro</a></i></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> June 15th, 2021 1:08pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">microsoft forms</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

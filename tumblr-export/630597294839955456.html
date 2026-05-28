@@ -1,0 +1,80 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerQuery] Buena práctica para un web request</h1>
+                    <p>Habiendo intentado muchas veces de obtener los resultados de una dirección web mediante Power Bi me encontré con un increíble post del gran Chris Webb que narra como es que la documentación de microsoft pasa por alto las buenas prácticas de conexión url con Power Query.</p><p>No podíamos esperar que Power Bi haga todo por nosotros al simplemente clickear el conector y que toda la magia suceda. En este caso particular cuando usamos un conector Web para hacer un request http lo mejor que podremos hacer es modificar manualmente el código power query para lograr mejorar nuestro resultado y ayudar a Power Bi Service a reconocer el origen del dato.</p>[[MORE]]<p>Las consultas web pueden deberse a diversas circunstancias, ya sea buscar respuesta de una api o un sitio web. Lo cierto es que para éstas respuestas el motor utilizará una función llamada Web.Contents. Ésta función dispone de una serie de parámetros configurables que no son seteados por defecto por la herramienta. Dichos parámetros mejorarían los request y ayudarían a Power Bi Service a reconocer el origen del dato puesto que aveces puede fallar en esta tarea en largas y confusas URLs.</p><p>Consideremos la siguiente dirección web de la api gratuita de star wars.</p><blockquote><p><a href="https://swapi.dev/api/people/?search=Skywalker" target="_blank">https://swapi.dev/api/people/?search=Skywalker</a><br/></p></blockquote><p>Es un Get request a una API preguntando por la palabra “Skywalker” en el nombre de los personajes dentro del universo de star wars. Éste método daría una respuesta en formato JSON por cada personaje con dicho apellido.</p><p>Normalmente nuestro primer instinto sería usar el conector web y pegar la URL en Power Bi generando el siguiente código:</p><blockquote><p>= Web.Contents(<br/>        “<a href="https://swapi.dev/api/people/?search=Skywalker" target="_blank">https://swapi.dev/api/people/?search=Skywalker”</a><br/>)</p></blockquote><p>Sin embargo, en lugar de pegar una larga URL (que no es nuestro caso pero sirve para ejemplo) vamos a descomponerla en parámetros <b>RelativePath</b> y <b>Query</b>. Éstos forman parte del listado opcional de parámetros de la función según la <a href="https://docs.microsoft.com/en-us/powerquery-m/web-contents" target="_blank">documentación oficial</a>. <b>RelativePath </b>se utiliza para especificar la ruta que va tomando la dirección web original, mientras que <b>Query </b>nos permitirá agregar los parámetros de la URL que aparecen seguidos de un signo “?” separados por “&amp;”. La separación es bastante sencilla. Nuestro código quedaría de la siguiente manera:</p><blockquote><p>Web.Contents(<br/>        &ldquo;https://swapi.dev/api/&rdquo;, <br/>
+
+        
+
+[<br/>
+
+        
+
+
+
+        
+
+RelativePath= &ldquo;people/&rdquo;, <br/>
+
+        
+
+
+
+        
+
+Query=[<br/>
+
+        
+
+
+
+        
+
+
+
+        
+
+search= &ldquo;Skywalker&rdquo;<br/>
+
+        
+
+
+
+        
+
+]<br/>
+
+        
+
+]<br/>)</p></blockquote><p>En caso que tengamos más de un parámetros especificado, nuestro Query tendría los valores entre [ ] separados por comas.</p><p>Éste método solo funcionará si la URL que separamos primero es válida por si misma. Es decir que “<a href="https://swapi.dev/api/" target="_blank"><i><a href="https://swapi.dev/api/" target="_blank">https://swapi.dev/api/</a></i></a>” debe responder un código 200 y probablemente todo lo que siga después hará que la respuesta del dato sea diferente.</p><p>De éste modo, aunque hagamos requests a otros métodos de la api como planetas, Power Bi Service entendería que nuestro origen de datos pasa por una conexión anónima a “<a href="https://swapi.dev/" target="_blank"><i><a href="https://swapi.dev/api/" target="_blank">https://swapi.dev/api/</a></i>”</a>.</p><p>Ésto ayuda no solo a construir URL más facilmente, sino también a tener un código más limpio y legible. </p><p>Espero que esto los ayude a mejorar y limpiar sus llamados a web o incluso les permita actualizarlos en caso que estén teniendo una falla en las actualizaciones de datos web.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> September 29th, 2020 10:00am </span>
+                                                          <span class="tag">power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power query</span>
+                                          <span class="tag">power query tips</span>
+                                          <span class="tag">power query tutorial</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

@@ -1,0 +1,99 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[Azure] Procesando AAS a través de un “webhook” por Data Factory</h1>
+                    <p>¡Hola! Mi nombre es Matías Deheza, Managing Director en Pi Data Strategy &amp; Consulting. No esta demás comentar que comparto el gusto por el estudio de los datos y el cómo generar valor agregado a partir de estos de hace ya 5 años. Es así como me he nutrido, principalmente, de experiencias que buscaré compartir con todos. </p><p>
+
+Me especializo en Azure y Arquitecturas de datos Cloud, de las cuales voy a compartir o contar algunas consideraciones técnicas interesantes a la hora de trabajar en estas arquitecturas. ¡Comencemos nomas!</p><p>Uno de los grandes atributos de
+Data Factory es su capacidad para orquestar múltiples componentes de Azure en
+un flujo de datos integral. Cuando empezamos a trabajar con datos, y particularmente
+con Analysis Services, se vuelve necesario que data Factory ejecute el
+procesamiento de este bajo ciertos parámetros. El procesamiento de Analysis
+Services será una actividad dentro de nuestro Pipeline y probablemente luego de
+esta sigan otras, por ende, es necesario que Data Factory reciba un aviso
+cuando el procesamiento haya finalizado. </p><p>Este post pretende mostrarles
+como disparar ese procesamiento y posteriormente como Data Factory espera por
+esa respuesta.</p><p>Como paso inicial es recomendable
+que hagan esto <a href="https://docs.microsoft.com/es-es/azure/analysis-services/analysis-services-refresh-azure-automation#authentication" target="_blank">https://docs.microsoft.com/es-es/azure/analysis-services/analysis-services-refresh-azure-automation#authentication</a>.
+Desde el punto “Authentication” hasta el punto “Diseño de un runbook de
+automation” inclusive.</p>[[MORE]]<h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Consumo con Data Factory
+
+</h2><p>Para consumir el runbook creado
+con Data Factory, primero se debe crear un webhook para ese runbook. Este
+proporcionará una URL a la que se puede llamar a través de una actividad del
+tipo “Webhook” de Data Factory.</p><p>1-      En
+el runbook previamente creado, haga click en <b>Webhooks, </b>y posteriormente
+en <b>Add Webhook.</b></p><figure data-orig-width="618" data-orig-height="268" class="tmblr-full"><img src="https://64.media.tumblr.com/39783d6170a6caea4450e5995a57d710/52f898792dcdb503-2a/s540x810/3bef236309be5e486512b6397b0a97b282c95062.png" alt="image" data-orig-width="618" data-orig-height="268"/></figure><p>2-      Asigne
+un nombre y luego copie la URL generada:</p><figure data-orig-width="327" data-orig-height="408" class="tmblr-full"><img src="https://64.media.tumblr.com/7dec7cf113b08afbe445745b7d2a6427/52f898792dcdb503-e2/s540x810/f299f21b11ee77fcb9b4e5663ab5f8a62ed9de33.png" alt="image" data-orig-width="327" data-orig-height="408"/></figure><p>3-      En
+Data Factory cree una actividad <b>Webhook </b>dentro de un pipeline</p><figure data-orig-width="624" data-orig-height="407" class="tmblr-full"><img src="https://64.media.tumblr.com/649340a1654602b6ea990df806c2e1c3/52f898792dcdb503-98/s540x810/fe17bb5902f70b00644f8d2e8999298858502dc6.png" alt="image" data-orig-width="624" data-orig-height="407"/></figure><p>La URL es la dirección URL creada
+a partir del webhook.</p><p>El cuerpo es un documento JSON
+que debe contener las siguientes propiedades:</p><p>Ejemplo del cuerpo de JSON:</p><blockquote><p>{</p><p>   
+&ldquo;AnalysisServicesDatabaseName&rdquo;: &ldquo;AdventureWorksDB&rdquo;,</p><p>   
+&ldquo;AnalysisServicesServer&rdquo;:
+&ldquo;asazure://westeurope.asazure.windows.net/MyAnalysisServer&rdquo;,</p><p>    &quot;DatabaseRefreshType&quot;:
+&ldquo;Full&rdquo;</p><p>}</p></blockquote><p>Estos parámetros se definen en el
+script de PowerShell del runbook. Cuando se ejecuta la actividad web, la carga
+de JSON que se pasa es WEBHOOKDATA.</p><p>Esto se deserializa y se almacena
+como parámetros de PowerShell, que luego usa el comando Invoke-ProcesASDatabase
+PowerShell.</p><p><b>LO MAS IMPORTANTE </b>y que
+diferencia una actividad “Webhook” de una “Web” es el último check de la imagen
+que dice “Report status on callback”. Este check hará que Data Factory espere
+una respuesta por parte del runbook en orden de seguir con las actividades
+consecuentes.</p><p>Para que esto funcione debemos
+entender que es lo que hace Data Factory cuando esto se activa.</p><p>Data Factory con la llamada al
+webhook también envía un “callBackUri”, es decir, una URL a la cual podemos
+llamar para avisar que la ejecución del runbook fue exitosa. Para poder hacer
+uso de esto debemos agregar una nueva porción de código en nuestro runbook:</p><figure data-orig-width="624" data-orig-height="493" class="tmblr-full"><img src="https://64.media.tumblr.com/77ad6770d3d00963ae7f9ba57428e349/52f898792dcdb503-70/s540x810/c115e97f1abab351b9b45ff40c5a86a89b072b8f.png" alt="image" data-orig-width="624" data-orig-height="493"/></figure><p>A continuación, les dejo el código escrito el código:</p><blockquote><p>$_callBackUri = $atmParameters.callBackUri</p></blockquote><blockquote><p>if ($_callBackUri)</p><p> {</p><p>    Invoke-WebRequest -Uri $_callBackUri -Method POST -UseBasicParsing</p><p> }</p></blockquote><p> Si hasta aquí me he explicado
+correctamente, tras correr la actividad en Data Factory deberán obtener una
+respuesta de la misma fue ejecutada correctamente.</p><figure data-orig-width="500" data-orig-height="343" class="tmblr-full"><img src="https://64.media.tumblr.com/ae68c3907ac014999a2ee4f8de31af0f/52f898792dcdb503-c6/s540x810/9dae4bed5fe0047e5bb498940c8bbfdc27600fc6.png" alt="image" data-orig-width="500" data-orig-height="343"/></figure><p>Con esto concluiría nuestra actualización y control. </p><p><i>Escrito por <a href="https://www.linkedin.com/in/matias-deheza-b0a6914a/" target="_blank">Matías Deheza</a>.</i></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> April 28th, 2020 10:16am </span>
+                                                          <span class="tag">SSAS</span>
+                                          <span class="tag">AAS</span>
+                                          <span class="tag">analysis services</span>
+                                          <span class="tag">data factory</span>
+                                          <span class="tag">powershell</span>
+                                          <span class="tag">tabular model</span>
+                                          <span class="tag">azure</span>
+                                          <span class="tag">data engineering</span>
+                                          <span class="tag">data modeling</span>
+                                          <span class="tag">azure data factory</span>
+                                          <span class="tag">azure data</span>
+                                          <span class="tag">azure analysis services</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

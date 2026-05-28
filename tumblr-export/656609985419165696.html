@@ -1,0 +1,64 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>Intro scripting C# en Power Bi con Tabular Editor</h1>
+                    <p>Algo que había esquivado por mucho tiempo es la posibilidad de escribir scripts contra Power Bi. Tal vez porque pensaba que NO ameritaba tanto para los medianos modelos con los que trabajo diariamente y probablemente ustedes estan pensando lo mismo.</p><p>Por un motivo u otro tuve que aplicarlo en un gran modelo que debía cambiar 160 medidas agregando en todas ellas una condición. La experiencia fue muy interesante hasta llevarme a replantear el usarlo aun en pequeños modelos.</p><p>Éste artículo mostrará algunas lineas de código en C# que nos ayudarán y definiciones de que podemos hacer.</p>[[MORE]]<h2>Tabular Editor</h2><p>Tabular Editor es una herramienta que le permite manipular y administrar fácilmente medidas, columnas calculadas, carpetas de visualización, perspectivas y traducciones en los modelos de Analysis Services Tabular y Power BI XMLA (desde el nivel de compatibilidad 1200 en adelante). Esto quiere decir que podemos hacer mucho más que lo que mostraremos en este post con la herramienta.</p><h2>Scripts en C#</h2><p>La herramienta nos brinda la posibilidad de ejecutar código C# que podemos utilizar de distintos modos para ayudarnos en la eficiencia de operaciones de DAX, como por ejemplo: Crear muchas medidas con un mismo patrón, modificar más de una medida al mismo tiempo, etc.</p><p>El script que hacemos puede correr de distintos modos según lo deseamos. Entonces lo primero que necesitamos entender son dos sentencias:</p><ul><li>Model: representa el modelo actual conectado. Corre nuestro script contra todo el modelo.</li><li>Selected: refleja la operación para la selección actual que tengamos sobre los componentes de la UI en tabular editor. Necesitamos seleccionar por lo menos un elemento de la lista de la izquierda para que funcione (podemos seleccionar varios con Ctrl)</li></ul><p>En redundancia, podemos armar scripts que ejecuten contra todo el modelo o simplemente seleccionar medidas o columnas que nos ayuden a ejecutar cierto código.</p><p>Ahora veamos unas funciones comunes de interés:</p><ul><li>Output() la función para retornar lo deseado, es ideal para debugging</li><li>CustomAction() corre otro script que fue grabado previamente como acción personalizada</li><li>FormatDax llama a DAXFormatter.com para formatear el código de respuesta</li><li>ConvertDax() convierte separadores/decimales entre UK/US </li><li>ExportProperties() exporta propiedades de objetos a una tab separada</li><li>ImportProperties() importa propiedades de objetos a una tab separada</li></ul><p>Éstos métodos nos ayudarán a modo informativo o para complementar nuestro código. Lo último que necesitamos saber antes de comenzar a escribir nuestro código es que lo que vamos a correr esta muy relacionado con linq. Para aquellos familiarizados con este modo de querear una BD dentro de C# puede resultarles más sencillo.</p><h2>Manos a la obra</h2><p>Iniciaremos nuestro camino de práctica haciendo una query que nos traiga un resultado, no vamos a hacer cambios o creación la primera vez, siempre es bueno ir familiarizándose.</p><blockquote><p><b>Veamos como hacer una consulta para saber que medidas tiene un nombre semejante al texto parametrizado (color)</b><br/>&gt; Model.AllMeasures.Where(m =&gt; m.Name.Contains(&ldquo;Color&rdquo;)).Output();</p></blockquote><p>Veamos que vamos a ejecutar sobre Todo el modelo apuntando a Todas las Medidas donde el nombre tenga la palabra Color. Al final agregamos Output() para conocer esas medidas que podrían ser aquellas a editar o simple análisis.</p><figure data-orig-width="870" data-orig-height="741" class="tmblr-full"><img src="https://64.media.tumblr.com/d3d2b14cc68e9edfcb41514f0a54d60a/e17e223531053e84-d2/s540x810/64a8f2cb7a6cc0cdeeba42ee3144d3d91ca015fa.png" alt="image" data-orig-width="870" data-orig-height="741"/></figure><p>La respuesta incluye una descripción de propiedades de la medida para conocer más detalladamente su información. Esto también nos enseña que podríamos buscar otra cosa además del nombre de la medida como por ejemplo si la Expresión de DAX contiene una palabra</p><blockquote><p><b>Consultar las medidas cuya expresión tenga la palabra calculate:</b><br/>&gt; Model.AllMeasures.Where(m =&gt; m.Expression.Contains(&ldquo;CALCULATE&rdquo;)).Output();</p></blockquote><figure data-orig-width="968" data-orig-height="737" class="tmblr-full"><img src="https://64.media.tumblr.com/b873c03f8a405738a91e033e6e20477b/e17e223531053e84-c5/s540x810/0ba7d6683886e5041f0413130ff76789983f7599.png" alt="image" data-orig-width="968" data-orig-height="737"/></figure><p>De ese modo pudimos encontrar todas las medidas que tienen ciertos patrones lo cual sería muy importante si necesitamos cambiar masivamente contra todo el modelo una determinada línea.</p><p>También podemos hacer otras operaciones sencillas como:</p><blockquote><p><b>Renombrar la selección</b><br/>&gt; Selected.Measures.Rename(&ldquo;Amount&rdquo;, &ldquo;Value&rdquo;);</p></blockquote><p>Prestemos atención a esta operación que inició de otro modo. No vamos a correrlo contra todo el modelo sino la selección. Entonces definimos Selected.Measures.[Operación]. De ese modo cambiamos el texto de una medida por otro. Muy util si tenemos muchas bajo un patron como YTD que necesitamos representar como YearToDate. Veamos como la foto tiene seleccionada la medida al ejecutar.</p><figure data-orig-width="1290" data-orig-height="400" class="tmblr-full"><img src="https://64.media.tumblr.com/cbd4591dadf092dc68b0224876838bdf/e17e223531053e84-61/s540x810/768c69525ed1a3a908d4636a8a6289876a81e791.png" alt="image" data-orig-width="1290" data-orig-height="400"/></figure><p>De este modo vamos viendo como escribir sobre nuestro modelo. Ahora si nos gusta esto podríamos inclusive crear medidas aquí directamente sin usar el motor de Power Bi Desktop de la siguiente manera:</p><blockquote><p><b>Crear una medida con sus detalles más importantes</b><br/>&gt; var nuevita = Model.Tables[&ldquo;InternetSales&rdquo;].AddMeasure(&ldquo;TabMedida&rdquo;, &ldquo;SUM(InternetSales[Unit Cost])&rdquo;);<br/>&gt; nuevita.FormatString =&ldquo;$#0.0&rdquo;;<br/>&gt; nuevita.Description = &ldquo;Nuevita creada por tabular editor&rdquo;;</p></blockquote><p>En esta oportunidad vemos que Model no solo ejecuta contra la totalidad sino que también podemos enfocarlo sobre una tabla en particular como ejemplo “InternetSales”. Esta sería la mejor práctica en un desarrollo de Power Bi donde anotamos no solo el código DAX sino su formato y descripción correspondiente.</p><p>Ahora vamos a saltar a algo más complejo y muy atractivo. Sabiendo que podemos consultar el modelo para obtener un determinado conjunto de medidas, nos vamos a aprovechar de eso para ejecutar una transformación solo en esa lista que se determinó con código para ser más eficiente y no estar ejecutando contra todas las medidas del modelo.</p><blockquote><p><b>Change text where text like (adding comment)</b><br/>foreach ( var medida in Model.AllMeasures.Where(m =&gt; m.Expression.Contains(&ldquo;SWITCH(_Units&rdquo;)) )<br/>{<br/>    medida.Expression = medida.Expression.Replace(&ldquo;SWITCH(_Units&rdquo;,&ldquo;&ndash;Changing units \nSWITCH(_Units&rdquo;);<br/>}</p></blockquote><p>Esta función nos ayudaría a hacer un reemplazo masivo en la Expresión DAX de las medidas cambiando el texto “SWITCH(_Units” por “&ndash;Changing units \nSWITCH(_Units&quot;. De ese modo agregaríamos un comentario en todas las expresiones que tengan un switch de la variable __units dentro de su expresión DAX. Todo esto con ayuda de un for que recorra cada medida devuelta por nuestra consulta a la cual le asignamos una Expression que sea su Expression.Replace. Esto nos muestra que también podemos ejecutar contra un único item especifico además del modelo y lo seleccionado pero de un modo un poco más completo. Así mismo vemos una de las funciones más potentes e importantes que es Replace.</p><p>No todo se trata de modificar y reemplazar sino también de crear. La creación de medidas nuevas puede ser muy atractivo cuando comenzamos un modelo nuevo y sobre todo si estamos en la industria de Retail. Podemos usar código para crear muchas medidas SUM ( Tabla[Columna] ) seleccionando las columnas que nos gustaría que tengan medidas simples como esa. Una vez que todas esas tienen medida podríamos hacerlo mismo para generar medidas como Año Anterior (LY) o YTD. Vamos a ver esta ultima opción en el ejemplo porque es más completa pero podríamos hacerlo con la selección de columnas para los SUM sencillos.</p><blockquote><p><b>Crear medidas de Time Intelligence para LY y YTD. Aprovechamos para formatear el nuevo código DAX. Obviamente necesitamos tabla fecha.</b><br/>var dateColumn = &ldquo;&lsquo;TablaFecha&rsquo;[Fecha]&rdquo;<br/>foreach (var m in Selected.Measures)<br/>{<br/>    //YTD<br/>    m.Table.AddMeasure(<br/>        m.Name + &ldquo; YTD&rdquo;,<br/>        &ldquo;TOTALYTD(&rdquo; + m.DaxObjectName + &ldquo;, &rdquo; + dateColumn + &ldquo;)&rdquo;<br/>    );<br/>	
+
+    
+
+//LY<br/>	
+
+    
+
+m.Table.AddMeasure(<br/>		
+
+    
+
+m.Name + &ldquo; LY&rdquo;,<br/>		
+
+    
+
+FormatDax( &ldquo;CALCULATE(&rdquo; + m.DaxObjectName + &ldquo;,&rdquo; + <br/>
+
+    
+
+
+
+    
+
+&ldquo;SAMEPERIODLASTYEAR(&rdquo; + dateColumn + &ldquo;))&rdquo; )<br/>	
+
+    
+
+);<br/>}</p></blockquote><p>En este caso vamos a recorrer las medidas seleccionadas para agregar dos medidas a cada una de ellas. Fijense que volvemos a usar AddMeasure como vimos antes pero de este modo se crearía en más de una oportunidad. Nos aprovechamos de DaxObjectName y Name para parametrizar el nombre de la medida y el objeto interno de la expresión que daría vida a las nuevas medidas bien ejecutadas para cada uno. Notese que la segunda medida incorpora FormatDax para que nuestra medida salga formateada como DAXFormatter lo haría. Si bien nosotros podríamos agregar \n para saltos de línea o \t para tabulaciones, es más simple llamar al formateador.</p><p>Al terminar nuestro trabajo y todas las ejecuciones debemos dar en el siguiente botón para que nuestros scripts se hagan reales en nuestro modelo de Power Bi Desktop, AAS, etc.</p><figure data-orig-width="697" data-orig-height="156" class="tmblr-full"><img src="https://64.media.tumblr.com/5109c8dcdfc5b73e9009ae9a25f60cb0/e17e223531053e84-c1/s540x810/1c37a6d36ddf736aa29b93ca79ad746fcd55844e.png" alt="image" data-orig-width="697" data-orig-height="156"/></figure><p>De esto modo concluimos nuestro paseo con algunas potentes opciones por las cuales deberíamos introducirnos en Tabular Editor. Espero que esto nos ayude a entender mejor esto de escribir código C# para scripting contra un modelo de Power Bi.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> July 13th, 2021 1:01pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">tabular editor</span>
+                                          <span class="tag">power bi dax</span>
+                                          <span class="tag">dax</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

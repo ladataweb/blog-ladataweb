@@ -1,0 +1,39 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerQuery] Buenas Prácticas en el editor de consultas</h1>
+                    <p>Power Bi Desktop hace cada día más fácil la transformación y limpieza de los datos. Con tan solo un botón en el editor de consultas es posible hacer grandes cosas. Esto es maravilloso pero también puede jugar en contra.</p><p>No porque hemos llegado a nuestro resultado esperado significa que aplicamos la herramienta de la mejor manera. Puede que en medio de tantas transformaciones estemos dejando de lado operaciones y pasos que haría la consulta total más pesada. </p><p>En este artículo veremos algunas buenas prácticas al momento de trabajar con el editor de consultas de Power Bi Desktop.</p>[[MORE]]<p>Antes de comenzar es importante aclarar que cuando damos “Aplicar y Cerrar” en nuestra ventana, comenzamos a correr todos y cada uno de los pasos del editor de consultas para cada tabla. Esto significa que mientras más complejos y más cantidad tengamos, mayor sería el tiempo de la consulta generada por Power Query hasta los datos.</p><p>Es por eso que es importante intentar mantener la mayor cantidad de buenas prácticas como nos sea posible. </p><h2>Buenas Prácticas</h2><ol><li>Consolidar los pasos repetidos, es probable que el motor nos ejecute pasos automáticamente o nosotros estemos “Cambiando el tipo” a cada rato. Intentemos llegar a la mínima cantidad de pasos posibles.</li><li>Crear grupos de tablas para organizar todas las tablas del modelo. Ejemplo grupos de tablas de hechos, dimensiones, auxiliares, etc.</li><li>Renombrar todas las tablas y columnas que no serán ocultas para facilitarle la construcción de informes a los usuarios finales.</li><li>Todas las columnas deben tener asignado un tipo datos acorde a su contenido. Debemos estar atentos a que no tengamos ningún “ABC123″ en las columnas puesto que el tipo de datos correcto aliviaran el peso de la columna.</li><li>Tener la barra de fórmulas visible para aprender o modificar código Power Query para lograr mayor flexibilidad en las transformaciones e incluso optimizar pasos.</li><li>Si estas agregando una columna personalizada o una función personalizada es importante renombrar el paso en el editor avanzado para facilitar la lectura de los pasos a la derecha de la ventana y no terminar viendo “Agregar columna personalizada 3″. También se puede renombrar pasos existentes de como la resta a “Resta de columna tal con tal”.</li><li>Cuando la transformación es muy compleja, y el nombre que pusimos por recomendación del paso 6 no la refleja, podemos entrar al editor avanzado y arriba del paso hacer un comentario con <i>//Texto del Comentario</i> . Esto creará un pequeño icono “i” al lado del paso en nuestro editor de consultas para leer el comentario descriptivo del paso.</li><li>Los parámetros creados para filtrar el conjunto de datos pueden ayudarnos a trabajar sobre una muestra de datos más reducida durante el desarrollo y posteriormente se puede expandir una vez publicado el archivo.</li><li>Mientras más atrás ejecutemos mejor será: Esto quiere decir que si podemos ejecutarlo en la consulta a la BD o DW, lo hagamos. Si tenemos permiso para crear vistas podemos ejecutar mucho allí. Si no tenemos la posibilidad sigamos adelante con Power Query.
+
+</li><li>Junto con la anterior, evitar romper el famoso y oscuro <i>query folding</i>. Podemos ver aquí los pasos que lo romperían.<br/><a href="https://docs.microsoft.com/en-us/power-query/power-query-folding#transformations-that-prevent-folding" target="_blank">https://docs.microsoft.com/en-us/power-query/power-query-folding#transformations-that-prevent-folding</a><br/></li><li>Si el origen de datos lo permite y no estamos rompiendo el <i>query folding</i>, configurar las actualizaciones incrementales para que los <i>refresh </i>en el Servicio sean más breves.</li><li>Conocer la herramienta de diagnósticos para descubrir brechas de performance en las consultas y tablas.</li><li>Si necesitas ver la mejor forma de hacer algo, seguí/buscá en el blog <a href="https://blog.crossjoin.co.uk/" target="_blank">Chris Webb</a></li><li>Para conocer el lenguaje de punta a punta en sus finos detalles podes seguir la serie de <a href="https://bengribaudo.com/blog/2017/11/17/4107/power-query-m-primer-part1-introduction-simple-expressions-let" target="_blank">Ben Gribaudo</a> que ya lleva casi 20 capítulos.</li></ol><p>Puede que existan muchos más, animate a descubrirlos poco a poco y a implementar los que te gusten de la lista para ir mejorando en buenas prácticas de modelado dentro de Power Bi Desktop.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> December 15th, 2020 1:00pm </span>
+                                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power query</span>
+                                          <span class="tag">power query tips</span>
+                                          <span class="tag">power query training</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

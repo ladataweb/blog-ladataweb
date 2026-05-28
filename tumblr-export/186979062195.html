@@ -1,0 +1,32 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerQuery] Llamar una “custom function” alojada en Github o local</h1>
+                    <p>Hoy vamos a ver una muy atractiva posibilidad para tener resguardada las funciones útiles propias que construyamos para Power Bi. El post consiste en mostrar como llamar a una función de código Power Query M guardada en un archivo dentro de un repositorio o del directorio local y reutilizarla desde allí.</p>[[MORE]]<p>Lo primero que haremos será abrir un notepad y pegar el código de nuestra función. Dejo un ejemplo sencillo para que sepan como escribirlo:<br/></p><blockquote><code>let<br/>   TextAsNumber = (valor as number)  =&gt;<br/>        let<br/>            Mostra = "El número es: " &amp; Text.From(valor)<br/>        in<br/>    Mostra<br/>in<br/>    TextAsNumber</code></blockquote><p>Guarden el archivo con la extensión &ldquo;.pq&rdquo; en su repositorio. Por ejemplo, yo voy a dejarlo en mi github.</p><p><i>Aclaración: la extensión pq la utilizaremos en caso que quieran trabajar posteriormente con los archivos desde power query sdk en visual studio.</i></p><p>Luego desde Power Bi Desktop Obtener Datos desde Consulta en blanco y pegá el siguiente código cambiando la cadena de texto por la correspondiente a tu url raw de github o de archivo local (en cuyo caso reemplazar web por file en Contents)</p><figure data-orig-width="1018" data-orig-height="514" class="tmblr-full"><img src="https://64.media.tumblr.com/e57e84d48218a636a4347acfe7d9a91f/6c3a46c49aebc53c-38/s540x810/6759ed042a83ba17cd6416357db6e514f79d5ecf.png" alt="image" data-orig-width="1018" data-orig-height="514"/></figure><blockquote><code>= Expression.Evaluate(Text.FromBinary(Web.Contents( "https://raw.githubusercontent.com/ibarrau/PowerBi-code/master/PowerQuery/PQFun.pq") ), #shared)</code></blockquote><p>Éste código será nuestra nueva función en el editor de consultas que ejecutará el código en github.</p><p><br/>¡Listo! Eso es todo, espero que esto los ayude a tener más consistentes las funciones caseras que construyan para usar varias veces sin copiar y pegar código.</p><p>Tengan en cuenta que actualmente no se puede programar una actualización en Power Bi Service con dicha función. Es un anticipo de un probable futuro que nos permita tener un buen repositorio de funciones. Podes ayudar a acelerar este proceso votando la idea aquí.<br/></p><p><a href="https://ideas.powerbi.com/forums/265200-power-bi-ideas/suggestions/18352027-support-refresh-from-the-web-when-running-code-scr" target="_blank">https://ideas.powerbi.com/forums/265200-power-bi-ideas/suggestions/18352027-support-refresh-from-the-web-when-running-code-scr</a><br/></p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> August 13th, 2019 9:06am </span>
+                                                          <span class="tag">Power Bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">Power bi desktop</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power query</span>
+                                          <span class="tag">powerquery</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

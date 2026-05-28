@@ -1,0 +1,46 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi] Formato Condicional Parte 2</h1>
+                    <p>Como vimos anteriormente el trabajo de colores sobre los reportes es indispensable para llevar la atención de un usuario a un determinado punto. En la primera parte vimos como realizar cuatro tipos de formatos condicionales sobre tablas o matrices. Ésta segunda parte se concentrará en llevar los formatos a las otras visualizaciones que provee power bi.</p><p>Es cierto que todo usuario de bi espera lo que llaman “KPI” <strike>que para cada usuario es algo distinto.</strike> Sea la visualización kpi como cualquier otra, normalmente lo que se refieren es poder ver una separación de colores, semaforización, sobre uno de los gráficos actuales para poder sugerir o alertar sobre ciertos valores que tienen un comportamiento que amerita revisar.</p>[[MORE]]<p>Si bien el proceso que voy a mostrar puede realizarse sobre cualquier visualización que contenga una configuración de formato de colores, vamos a recomendar construir este tipo de diferenciadores para dos gráficos puntuales que son la tarjeta y el gauge.</p><p>Para ello vamos a colocar una de las visualizaciones con un valor numérico en pantalla.</p><figure data-orig-width="432" data-orig-height="233" class="tmblr-full"><img src="https://64.media.tumblr.com/3a08df15d4a3786c275f464c64f59434/0d2ceec271c42037-eb/s540x810/fa7165e8f3051c99a36b1d76e9fef2605bf37d11.png" alt="image" data-orig-width="432" data-orig-height="233"/></figure><p>
+
+Para poder administrar los colores en una visualización
+
+nos dirigimos a los colores de datos en las opciones de formato del gráfico.<br/></p><figure data-orig-width="993" data-orig-height="568" class="tmblr-full"><img src="https://64.media.tumblr.com/8cf17ee1e36538d32098b6bb9a0828f7/0d2ceec271c42037-5f/s540x810/67570464c3455c6c00e67386371f68294becc9d9.png" alt="image" data-orig-width="993" data-orig-height="568"/></figure><p>A partir de ese momento veremos una pantalla con la que nos sentimos familiarizados pues es la misma que pudimos apreciar en el <a href="https://blog.ladataweb.com.ar/post/190642802065/powerbi-formato-condicional-parte-1" target="_blank">post anterior</a>. Para no repetir al anterior que dio formato de reglas,<strike> y en vista que la escala de colores se entiende a la vista</strike>, vamos a realizarlo por valor de campo.</p><p>
+
+Para poder administrar colores de valores de campo en una visualización, primero vamos a construir una medida que responderá con cadenas de texto de los valores hexadecimales deseados. Por ejemplo:
+
+<br/></p><figure data-orig-width="547" data-orig-height="217" class="tmblr-full"><img src="https://64.media.tumblr.com/38eda90fd1a2d41360e556b39f015cad/0d2ceec271c42037-e6/s540x810/6bcf2f86330f0cd8792b6265e07d762cc1b69589.png" alt="image" data-orig-width="547" data-orig-height="217"/></figure><p>
+
+Cabe destacar que esta es una sencilla regla entre pocos valores. La regla podría haber sido implementada bajo una función SWITCH para casos de varios valores bajo una misma condición.
+
+<br/></p><p>Entonces vamos a cambiar la opción “Dar formato por” para que sea “Valor de campo”. A partir de ese momento podemos colorear una columna a partir de otra. En este caso bajo una medida casera.</p><figure data-orig-width="825" data-orig-height="245" class="tmblr-full"><img src="https://64.media.tumblr.com/ea97fd70131a75903b852f281f1cc639/0d2ceec271c42037-01/s540x810/c92f4dadb53bf2061ced444ae00444cb380cefcc.png" alt="image" data-orig-width="825" data-orig-height="245"/></figure><p>Ahora podremos apreciar como el medidor cambiará de color bajo al regla impuesta en Dax. De esta manera podríamos tener mayor visibilidad de los formatos en medidas para controlarlos o cambiarlos sencillamente, además de poder con facilidad darle el mismo formato a muchas visualizaciones que contengan la medida evaluada en lugar de configurarlo cada vez. No olvides que todos los ejemplos estan en mi <a href="https://github.com/ibarrau/PowerBi-code/blob/master/PowerBi%20Reports/BlogDemos.pbix" target="_blank">github</a>.</p><p>¡Así logramos nuestro formato condicional en otro tipo de visualizaciones!</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> February 11th, 2020 10:01am </span>
+                                                          <span class="tag">power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi solutions</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi formato condicional</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

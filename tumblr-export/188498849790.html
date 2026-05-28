@@ -1,0 +1,38 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[SelfServiceBi] Power Bi Capa semántica</h1>
+                    <h2>¿Qué es self-service Bi?</h2><p>Bi de Autoservicio. Permite a usuarios finales conectarse a
+un conjunto de datos limpio, manipulado y semánticamente modificado con
+nomenclaturas de negocio para poder construir informes de forma sencilla a
+gusto del usuario final.</p><p>Para poder liberar la posibilidad a los usuarios que creen sus propios informes es necesario construir una capa semántica que los ayude a identificar categorías y valores con nombres sencillos para el negocio.</p><p>A continuación algunas prácticas para construir la capa.</p>[[MORE]]<h2>Construcción</h2><p>Hoy recomiendo dos posibles formas de concretar esta necesidad puntual.</p><ul><li>Mediante Analysis Services (OnPremise o Azure)</li><li>Promoted datasets (o Power Bi Premium)</li></ul><p>Vamos a ver cómo preparar una capa semántica sin importar la tecnología. Esto puede ser un trabajo sencillo y <b>muy necesario</b>, pero no por ello cortito, sino más bien es un trabajo largo y hasta fastidioso.</p><p>La idea armar una capa semántica de nuestro modelo tabular consisten en dos pasos indispensables que luego puede extenderse a mucho más. Los pasos que creo obligatorios son:</p><ol><li>Ocultar campos confusos o inestables (con muchos valores nulos o sucios)</li><li>Renombrar columnas con nomenclatura de negocio.</li></ol><p>La mayoría de las veces, lamentablemente, cargamos columnas por demás. Ya sea porque nos pidió el usuario final o por miedo a necesitarlas luego. Mientras hacemos los primeros análisis de datos para comprenderlos y armar un requerimiento, vamos a ir descubriendo qué es realmente lo que ellos quieren de los datos. En ese momento vamos a poder desarrollar estos pasos.</p><p>Supongamos un modelo estrella como el siguiente:</p><figure data-orig-width="905" data-orig-height="714" class="tmblr-full"><img src="https://64.media.tumblr.com/4e4fe5671abaa5b29acfb415d5bb9860/1ffc5bc41f920f34-20/s540x810/18e9b60310a6461ab4a75e72bdf373829249b99d.png" alt="image" data-orig-width="905" data-orig-height="714"/></figure><h2>1)</h2><p>El ocultar columnas es un paso brusco puesto que hay que dejar el mínimo posible. La regla número uno en mi opinión es “evitar ids”. Los ids o claves no tienen por qué ser vistos por el usuario final. Ahora veamos el comportamiento para el modelo.</p><p>Analizando dimensiones. Por ejemplo, la dimensión producto. Debemos pensar que valores cualitativos son realmente los necesarios para el análisis. Pienso que solo sería necesario el nombre, color y nombre de categoría. Todo lo demás como los id, días que lleva en taller, descripción, nombres en otros idiomas, etc. Es muy probable que no hagan falta. A menos que tengamos un requerimiento especifico de usar uno de esos campos, sospecho que no ayudarían al usuario. Las dimensiones en general suelen mantener el nombre y alguna característica de la misma, no más que eso.</p><p>Las tablas de hecho son diferentes. La mejor forma de preparación de un hecho para capa semántica consiste en ocultar absolutamente todas las columnas. Recordemos que esta tabla cuenta hechos cuantitativos y por lo tanto estará constituida únicamente de medidas calculadas en DAX. Estas medidas deben ser desde la más sencilla como COUNTROWS (Tabla_Hecho) hasta un cálculo complejo porcentual o con time intelligence solicitado. Todo lo que sea cuantitativo debe existir como medida calculada y no pensar en arrastrar un campo y sumarizarlo (count, sum, etc) en los valores de una visualización.</p><h2>2)</h2><p>Teniendo el mínimo necesario de columnas por tabla (como mucho sospecho que serían 4 columnas por dimensión y solo medidas en hechos) es momento de renombrar. Como en algún post habré mencionado, siempre es mejor transformar lo más atrás posible. Entonces en caso de ser posible renombraremos las columnas de las dimensiones en el editor de consulta. No solo quedamos en modificar las columnas sino también los nombres de las tablas en caso de que una dimensión lleve un nombre confuso como “tabla_hecho_venta_factura86″. Debemos considerar llevarlo a lo más simple posible. Por ejemplo, si tenemos “SpanishProductCategoryName” dentro de producto tal vez la mejor forma sea “Categoría”. Si bien se entiende el primer nombre, debemos llevar los nombres a la forma más simple posible.</p><p>Lo mismo ha de suceder con las medidas calculadas en DAX para la tabla de hecho. Debemos pensar que como no tendremos columnas, el conteo de filas, la suma de una columna, conteo distintivo de un id, etc. Son operaciones que tenemos que tener en cuenta desde este momento dado que solo serán resueltas por medidas.</p><h2>Resultado</h2><p>Con estos pasos tendremos una mínima y excelente capa semántica lista para ser utilizada por un usuario final que pueda entender las tablas y campos para la construcción de visualizaciones.</p><p>¿Como puedo perfeccionar aún más? Existen otros procesos para llevar el modelo a un detalle más perfecto. Entre ellos se puede considerar colocarle descripciones a las medidas para que aparezca un tooltip explicativo, categorizar campos como URL, latitud, ubicación, etc. Predefinir cantidad de decimales, signos de puntuación o dinero. Inclusive podría construirse un glosario que forme parte del ingreso de datos de la capa semántica para que ellos puedan buscar definiciones de negocio como parte de la capa semántica.</p><p>¡Espero que pronto puedan brindarles dicho servicio a sus usuarios!</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> October 21st, 2019 3:58pm </span>
+                                                          <span class="tag">semantic layer</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">ssas</span>
+                                          <span class="tag">analysis services</span>
+                                          <span class="tag">self service bi</span>
+                                          <span class="tag">tabular model</span>
+                                          <span class="tag">power bi desktop</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

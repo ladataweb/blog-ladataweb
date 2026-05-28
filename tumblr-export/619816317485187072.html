@@ -1,0 +1,57 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DAX] RELATED vs RELATEDTABLE</h1>
+                    <p>De las cosas más importantes en un modelo tabular, ya sea dentro de power bi o analysis services, están las relaciones entre tablas. Ciertamente son la clave para que un modelado escale puesto que una buena comprensión de ellas ayudará a la construcción de medidas y gráficos necesarios que estén en los requerimientos sin necesidad de armar monstruos de dax o ciclos ambiguos de relaciones.</p><p>De cierto modo suena a “sencillo” puesto que no tiene mucho para comprobar pero resulta clave entender el uno y el muchos que varios lo ignoran siempre y cuando este relacionado y terminan generando relaciones por todos lados que incluso componen la “prohibida” muchos a muchos. Llamaremos cardinalidad a este concepto de uno a uno, uno a muchos o muchos a muchos.</p><p>Tomando de referencia la siguiente imagen vamos a ver dos potentes funciones de DAX que nos ayudarían a involucrar en nuestra tabla actual contenido de una tabla relacionada.</p>[[MORE]]<p>Caso: Teniendo en cuenta la siguiente relación consideramos que UN producto conoce MUCHAS ventas en internet. Esto quiere decir que por cada ProductKey único en la tabla de producto existen muchas veces en las ventas de internet. Es decir que el producto 886 camiseta blanca aparece en una sola fila de producto pero aparece en muchas filas de ventas de internet. comprendiendo este concepto vamos a analizar las funciones.</p><figure data-orig-width="555" data-orig-height="302" class="tmblr-full"><img src="https://64.media.tumblr.com/aea4daac16c65560d9a9a73e00eb4a79/4cc5101d0fc3f53b-15/s540x810/75a003db07384687a863a9fb7881fc138a3680bd.png" alt="image" data-orig-width="555" data-orig-height="302"/></figure><h2>Related</h2><blockquote><p>
+
+RELATED(&lt;column&gt;) 
+
+<br/></p></blockquote><p>
+
+Devuelve <b>UN</b> valor relacionado de otra tabla.
+
+
+Valor único que está relacionado con la fila actual. No estaría demás aclarar que para que funcione debe existir una relación entre las tablas en la cual una de ellas debe ser de cardinalidad UNO puesto que devuelve un valor. Por lo tanto esta función solo puede ser usada en tablas que conozcan un único valor de otra. Related en nuestro ejemplo sería algo que podría implementar InternetSales para conocer sobre otra columna de producto dado que actualmente solo conoce el ProductKey. Con dicho ProductKey viaja a Producto que tiene <b>una única fila</b> con ese número y puede acceder al resto de las columnas.<br/></p><p>Para ver más claro el caso vamos a agregar una columna calculada en InternetSales como indica la imagen:</p><figure data-orig-width="1731" data-orig-height="603" class="tmblr-full"><img src="https://64.media.tumblr.com/66229d64e4443db2093dd10e14424a61/4cc5101d0fc3f53b-13/s540x810/741c0d2e5036a7ace2cc6d9bf2b0e169d3614af1.png" alt="image" data-orig-width="1731" data-orig-height="603"/></figure><p>De ese modo pudimos acceder desde InternetSales por la relación que tiene con Producto mediante el ProductKey a su columna Product Name.</p><h2>RelatedTable</h2><blockquote><p>
+
+RELATEDTABLE(&lt;tableName&gt;)  
+
+<br/></p></blockquote><p>
+
+Devuelve <b>una tabla</b> evaluada en un contexto modificado por los filtros especificados. Filtros que están relacionados a la fila actual. Nuevamente vuelvo a aclarar que para que funcione debe existir una relación entre las tablas en la cual una de ellas debe ser de cardinalidad MUCHOS puesto que devuelve una tabla filtrada. En este caso la función sería usada en una tabla que conozca muchos valores de otra. El ejemplo en este caso sería usarlo en Producto que una sola fila de la misma va a filtra muchas de InternetSales gracias a dicha función. Es decir que por cada filas de producto relatedtable encontrará una o más filas relacionadas de InternetSales y como no podemos incorporar a nuestra tabla de producto una columna con un valor “Tabla Filtrada”, <b>vamos a agregar/sumarizar</b> esa respuesta filtrada para obtener un único valor.</p><p>Veamos el siguiente ejemplo de una columna calculada en Product para ser más claros:</p><figure data-orig-width="1730" data-orig-height="399" class="tmblr-full"><img src="https://64.media.tumblr.com/d62a6caa52c49a6f69ec743bf5b04590/4cc5101d0fc3f53b-82/s540x810/40c162cd5cf315e5ec9422c3499b1b94c22ea490.png" alt="image" data-orig-width="1730" data-orig-height="399"/></figure><p>La función va a contar las filas de la tabla filtrada relacionada de InternetSales para cada ProductKey (puesto que la relación de las tablas se hace mediante esa columna). Veamos que incluso es de gran utilidad para conocer que producto nunca se vendieron (aquellos en blanco).</p><h2>Conclusión</h2><p>El trabajo que podemos realizar en DAX para completar requerimientos es muy poderoso. Naturalmente hay mucho que puede ser construido en Power Query y mucho que puede ser construido en DAX. Un tip para elegir donde realizar cada acción es <i><b>“Si transformación implica algo de una única tabla lo realicen en Power Query, pero si necesitamos el modelo relacionado para llegar a un resultado debemos nutrirnos de DAX”</b></i>. De dicho modo podemos aprovechar las características de un modelo tabular relacionado para calcular ciertos valores. Si bien el ejemplo puede sonar a que solo sirve con columnas calculadas no es así. Veamos para cerrar este ejemplo de un caso más utilizado en el que se construye una medida para tener una tarjeta que indique la venta de los productos rojos:</p><blockquote><p>= SUMX(<br/>        FILTER( <br/>               'InternetSales&rsquo;  ,<br/> 
+
+        
+
+       RELATED(&lsquo;Product&rsquo;[Color]) = &ldquo;Red&rdquo;  <br/>    ),  <br/>    'InternetSales&rsquo;[SalesAmount]<br/>)  </p></blockquote><p>Así concluimos nuestra comparación de estas dos maravillosas funciones del mundo DAX. Es cierto que podemos llevar a valores relacionados entre tablas entendiendo un poco de la transición de contexto y calculate pero este ciclo de DAX apunta a conocer las funciones más básicas en primera instancia.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> June 2nd, 2020 10:01am </span>
+                                                          <span class="tag">dax</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">dax tutorial</span>
+                                          <span class="tag">dax tips</span>
+                                          <span class="tag">dax training</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">dax argentina</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

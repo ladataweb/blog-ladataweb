@@ -1,0 +1,41 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[PowerBi] Creando mensajes de aviso o alerta en informe</h1>
+                    <p>Con los varios años de Power Bi los usuarios en la industria siguen confundiendo el poder del analista con la herramienta. Muchos piensan que somos dueños y haríamos lo que fuera como un sistema de información. Recuerdo que más de una vez escuche “quiero hacer click y que salga un pop-up que me lleve y viaje e ingrese un &hellip;”<br/></p><p>No todo es posible tal y como lo quieren pero hoy Power Bi nos deja solucionar grandes inquietudes como ésta con sus muchas posibilidades. Hoy vamos a aprender a mostrar un mensaje en pantalla dada una determinada acción.</p>[[MORE]]<p>En diversas ocasiones me encontré con requerimientos en los que deseaban multi-filtros en pantallas pero habían algunos que no podían seleccionar varios entre sí. Otras veces hay una opción en los filtros que tiene una característica única. También podríamos tener filtros que cambien un cálculo y sería útil que cambie el mensaje según la fórmula. Para todos estos y muchos más casos que podría ocurrir vamos a recurrir a mensajes de aviso con medidas.</p><p>
+
+Un ejemplo bien claro y concreto es tener un conversor de divisas para ver “Local” o “USD” junto con un filtro de países en pantalla. Si seleccionamos varios países y no cambiamos la moneda a USD, la suma sería sumamente errónea porque no podemos sumar el dinero de los distintos países entre sí. Para ello necesitaríamos un mensaje de aviso que advierta al usuario cuando tiene seleccionado más de un país y moneda “local”.<br/></p><p>La construcción del mensaje es sencilla. Creamos una nueva medida con una condición en pantalla. En este ejemplo vamos a mostrar un aviso cuando tenemos más de una selección en los check buttons.</p><blockquote><p>
+
+Mensaje alerta = <br/>IF (<br/>    COUNTROWS(VALUES(Stores[CountryRegion])) &gt; 1,<br/>    &ldquo;Ha seleccionado más de un país. Asegurese de tener seleccionado monto en USD.&rdquo;,<br/>    &ldquo;&quot;    <br/>) </p></blockquote><p>La medida debe ser una condición IF o SWITCH que nos retorno el texto deseado manteniendo un “” en caso contraría. ¿Por qué usamos “” y no BLANK()? porque al exponerlo a una visualización es invisible.</p><p>Entonces paso siguiente generamos una tarjeta/card sin category label con la medida creada y el texto de datos muy pequeño. Podemos también dar énfasis en el mensaje pintándolo rojo en caso que sea algo crítico.</p><figure data-orig-width="1247" data-orig-height="547" class="tmblr-full"><img src="https://64.media.tumblr.com/871c581b03f14fbd955d6efb6634a198/045d928b2b105ad0-a6/s540x810/7046af4b6922080385e93304f03cc55de31b762d.png" alt="image" data-orig-width="1247" data-orig-height="547"/></figure><p>Con la tarjeta y la condición estamos listos para poner a prueba nuestro mensaje de aviso. El resultado final sería algo más o menos así:</p><figure data-orig-width="886" data-orig-height="500" class="tmblr-full"><img src="https://64.media.tumblr.com/9c9dbe5a911be0e6be9e5a277bc8b458/045d928b2b105ad0-02/s540x810/1e3989e4970707faff84559bcac2156c8276984d.gif" alt="image" data-orig-width="886" data-orig-height="500"/></figure><p>Recordemos que al ser una medida será un cálculo dinámico según el modelo. No solo serviría para dar mensaje con acciones entre filtros o botones, sino también podría servir para alertar números que estén excediendo barreras. Nosotros definimos la condición de datos o interacción de usuario.</p><p>Espero que les sea útil y puedan ayudar a una mejor experiencia de usuario con los mensajes ocultos.</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> October 6th, 2020 10:00am </span>
+                                                          <span class="tag">power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi desktop</span>
+                                          <span class="tag">power bi ux</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">uxui</span>
+                                          <span class="tag">data visualization</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                          <span class="tag">ladataweb</span>
+                                                    </div>
+            </body>
+        </html>
+
+        

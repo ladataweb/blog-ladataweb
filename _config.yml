@@ -7,6 +7,7 @@ url: "https://ladataweb.github.io"
 baseurl: "/blog-ladataweb"
 
 permalink: /:title/
+excerpt_separator: "<!--more-->"
 
 author: Ignacio Barrau
 main_site_url: "https://ladataweb.com.ar"
@@ -18,3 +19,8 @@ socials:
   linkedin: "https://ar.linkedin.com/in/ignacio-barrau-b794b082"
   github: "https://github.com/ibarrau"
   subscribe: "https://www.ladataweb.com.ar/contacto.html?id=suscribirse"
+
+paginate: 5
+paginate_path: "/page:num/"
+plugins:
+  - jekyll-paginate

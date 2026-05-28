@@ -1,0 +1,39 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <link rel="stylesheet" type="text/css" href="../style.css"/>
+            </head>
+            <body>
+                
+                
+                                    <h1>[DataModeling] 5 tips de reducción de tamaño de modelo</h1>
+                    <p>A medida que transcurre el tiempo nuestros modelos más antiguos empiezan a perseguirnos. Seguramente los primeros y antiguos modelos que construimos no contienen todas las mejores prácticas que hay sobre Bi sino que vamos aprendiendo poco a poco con cada proyecto que vamos desarrollando. Cierto es que la experiencia nos invita a construir cada vez mejores modelos.</p><p>Sin embargo, ¿Que ocurre con nuestros antiguos desarrollos? lo cierto es que pueden perder eficiencia y hasta fallar en tamaño puesto que no fueron contemplados con las mejores prácticas. </p><p>En esta oportunidad me gustaría hacer este pequeño post para revelar cinco buenas prácticas necesarias para construir un modelo con el tamaño indispensable y no excedente.</p>[[MORE]]<h2>5 Tips para reducir el tamaño del modelo</h2><ol><li><b>Data Modeling:</b> es esencial para tener la memoria del modelo a su máxima eficiencia que previamente analicemos los orígenes de datos para poder construir un modelo estrella que mantenga el uso de sus hechos y dimensiones de la mejor forma posible.</li><li><b>Cada columna por su tipo:</b> en muchas oportunidades cuando el origen de datos no es una base de datos con tipos de datos definidos, solemos dejar todo en texto. Ciertamente el tipo de datos de cada columna tiene un peso distinto. Los valores numéricos pesan menos que los de texto. Los enteros que los decimales. Incluso si reducimos el número de decimales también reduciremos el peso de la columna en el modelo.</li><li>Mantener lo necesario: es muy importante no cargar las tablas en su totalidad sino cargar aquello que realmente necesitamos para el modelo. Solo debemos utilizar las columnas que los requerimientos nos pidan para evitar tablas con mucha cantidad de columnas. </li><ol><li>En este punto particular nos puede ayudar a esta limpieza herramientas como <a href="https://www.thebiccountant.com/2020/01/01/tidy-up-power-bi-models-with-the-power-bi-cleaner-tool/" target="_blank">Power Bi Cleaner tool</a> y otras que nos reconocen que columnas estamos utilizando en nuestro power bi y cuales no están siendo utilizadas.</li><li>Si ya tenemos el modelo construido hace tiempo y solo queremos quitar las columnas de gran tamaño y no todas ellas, podemos nutrirnos de DAX Studio con su vertipaq analyzer integrado que nos dará definiciones sobre las columnas para conocer cual de ellas ocupa más tamaño y mucha otra información. <a href="https://www.youtube.com/watch?v=1A7gFFvlRFI" target="_blank">Aquí un video de como activarlo.</a></li></ol><li>Relacionado a lo anterior que aveces nos cuesta y nos da pereza hay una característica en las columnas de las tablas que tiene mayor peso que las demás. Éstas son las columnas únicas. Aquellas columnas que son distintas en cada fila de la tabla. Si bien no podemos eliminar los id que nos relacionan las dimensiones con los hechos, si podemos tener presente en no cargar una columna con identificador único en nuestras tablas de hecho, puesto que no son necesarias y ocupan mucho lugar (al punto que puede caer la mitad de tamaño el modelo)</li><li>Una de las más conocidas pero no menor es el tip que ya revele en <a href="https://blog.ladataweb.com.ar/post/189172594850/datamodeling-fecha-autom%C3%A1tica-en-power-bi" target="_blank">otro post </a>sobre fechas. Por defecto Power BI tiene incorporada una opción, que podemos encontrar en las opciones de power bi desktop, referida a time intelligence llamada auto-datetime. Eliminando dicha opción reduciremos el modelo quitando todas las tablas fechas que nos genera automáticamente por cada columna fecha que tenemos en nuestras tablas. </li></ol><p>Agradezco a <a href="https://www.linkedin.com/in/cristian-salgado-93b10875/" target="_blank">Cristian Salgado </a>por la idea de hacer este post y sus aportes atravesando varios de los pasos para reducir un modelo realmente.</p><p>¡Espero que pueda reducir el tamaño de sus modelo a partir de éstos consejos!</p>
+                
+                
+                
+                
+                
+                
+                                <div id="footer">
+                <span id="timestamp"> March 31st, 2020 10:02am </span>
+                                                          <span class="tag">Power bi</span>
+                                          <span class="tag">powerbi</span>
+                                          <span class="tag">power bi tips</span>
+                                          <span class="tag">power bi tutorial</span>
+                                          <span class="tag">power bi training</span>
+                                          <span class="tag">Power BI Desktop</span>
+                                          <span class="tag">data model</span>
+                                          <span class="tag">power bi data modeling</span>
+                                          <span class="tag">Tabular Model</span>
+                                          <span class="tag">starschema</span>
+                                          <span class="tag">SSAS</span>
+                                          <span class="tag">power bi SSAS</span>
+                                          <span class="tag">power bi argentina</span>
+                                          <span class="tag">power bi cordoba</span>
+                                          <span class="tag">power bi jujuy</span>
+                                                    </div>
+            </body>
+        </html>
+
+        
