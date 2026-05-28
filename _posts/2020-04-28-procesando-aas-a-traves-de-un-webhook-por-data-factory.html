@@ -32,8 +32,8 @@ cuando el procesamiento haya finalizado. </p><p>Este post pretende mostrarles
 como disparar ese procesamiento y posteriormente como Data Factory espera por
 esa respuesta.</p><p>Como paso inicial es recomendable
 que hagan esto <a href="https://docs.microsoft.com/es-es/azure/analysis-services/analysis-services-refresh-azure-automation#authentication" target="_blank">https://docs.microsoft.com/es-es/azure/analysis-services/analysis-services-refresh-azure-automation#authentication</a>.
-Desde el punto “Authentication” hasta el punto “Diseño de un runbook de
-automation” inclusive.</p><h2>
+Desde el punto "Authentication" hasta el punto "Diseño de un runbook de
+automation" inclusive.</p><h2>
 
 
 
@@ -58,27 +58,27 @@ Consumo con Data Factory
 </h2><p>Para consumir el runbook creado
 con Data Factory, primero se debe crear un webhook para ese runbook. Este
 proporcionará una URL a la que se puede llamar a través de una actividad del
-tipo “Webhook” de Data Factory.</p><p>1-      En
+tipo "Webhook" de Data Factory.</p><p>1-      En
 el runbook previamente creado, haga click en <b>Webhooks, </b>y posteriormente
 en <b>Add Webhook.</b></p><figure class="tmblr-full" data-orig-height="268" data-orig-width="618"><img alt="image" data-orig-height="268" data-orig-width="618" src="https://64.media.tumblr.com/39783d6170a6caea4450e5995a57d710/52f898792dcdb503-2a/s540x810/3bef236309be5e486512b6397b0a97b282c95062.png"/></figure><p>2-      Asigne
 un nombre y luego copie la URL generada:</p><figure class="tmblr-full" data-orig-height="408" data-orig-width="327"><img alt="image" data-orig-height="408" data-orig-width="327" src="https://64.media.tumblr.com/7dec7cf113b08afbe445745b7d2a6427/52f898792dcdb503-e2/s540x810/f299f21b11ee77fcb9b4e5663ab5f8a62ed9de33.png"/></figure><p>3-      En
 Data Factory cree una actividad <b>Webhook </b>dentro de un pipeline</p><figure class="tmblr-full" data-orig-height="407" data-orig-width="624"><img alt="image" data-orig-height="407" data-orig-width="624" src="https://64.media.tumblr.com/649340a1654602b6ea990df806c2e1c3/52f898792dcdb503-98/s540x810/fe17bb5902f70b00644f8d2e8999298858502dc6.png"/></figure><p>La URL es la dirección URL creada
 a partir del webhook.</p><p>El cuerpo es un documento JSON
 que debe contener las siguientes propiedades:</p><p>Ejemplo del cuerpo de JSON:</p><blockquote><p>{</p><p>   
-“AnalysisServicesDatabaseName”: “AdventureWorksDB”,</p><p>   
-“AnalysisServicesServer”:
-“asazure://westeurope.asazure.windows.net/MyAnalysisServer”,</p><p>    "DatabaseRefreshType":
-“Full”</p><p>}</p></blockquote><p>Estos parámetros se definen en el
+"AnalysisServicesDatabaseName": "AdventureWorksDB",</p><p>   
+"AnalysisServicesServer":
+"asazure://westeurope.asazure.windows.net/MyAnalysisServer",</p><p>    "DatabaseRefreshType":
+"Full"</p><p>}</p></blockquote><p>Estos parámetros se definen en el
 script de PowerShell del runbook. Cuando se ejecuta la actividad web, la carga
 de JSON que se pasa es WEBHOOKDATA.</p><p>Esto se deserializa y se almacena
 como parámetros de PowerShell, que luego usa el comando Invoke-ProcesASDatabase
 PowerShell.</p><p><b>LO MAS IMPORTANTE </b>y que
-diferencia una actividad “Webhook” de una “Web” es el último check de la imagen
-que dice “Report status on callback”. Este check hará que Data Factory espere
+diferencia una actividad "Webhook" de una "Web" es el último check de la imagen
+que dice "Report status on callback". Este check hará que Data Factory espere
 una respuesta por parte del runbook en orden de seguir con las actividades
 consecuentes.</p><p>Para que esto funcione debemos
 entender que es lo que hace Data Factory cuando esto se activa.</p><p>Data Factory con la llamada al
-webhook también envía un “callBackUri”, es decir, una URL a la cual podemos
+webhook también envía un "callBackUri", es decir, una URL a la cual podemos
 llamar para avisar que la ejecución del runbook fue exitosa. Para poder hacer
 uso de esto debemos agregar una nueva porción de código en nuestro runbook:</p><figure class="tmblr-full" data-orig-height="493" data-orig-width="624"><img alt="image" data-orig-height="493" data-orig-width="624" src="https://64.media.tumblr.com/77ad6770d3d00963ae7f9ba57428e349/52f898792dcdb503-70/s540x810/c115e97f1abab351b9b45ff40c5a86a89b072b8f.png"/></figure><p>A continuación, les dejo el código escrito el código:</p><blockquote><p>$_callBackUri = $atmParameters.callBackUri</p></blockquote><blockquote><p>if ($_callBackUri)</p><p> {</p><p>    Invoke-WebRequest -Uri $_callBackUri -Method POST -UseBasicParsing</p><p> }</p></blockquote><p> Si hasta aquí me he explicado
 correctamente, tras correr la actividad en Data Factory deberán obtener una

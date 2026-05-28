@@ -35,15 +35,15 @@ mucho los videos y los posts que encuentro en los distintos blogs, y es por eso
 que en este momento quiero compartirles algo que a mí me viene sirviendo, como
 refrescar un dataset de Power BI desde Azure Data Factory a través de Service
 Principal.</p><p>En 2019 Martín Zurita junto
-con Ignacio Barrau escribieron un post en LaDataWeb sobre “Usar Power Bi API
-sin permiso del administrador” y hoy quiero completarlo añadiendo la opción de
+con Ignacio Barrau escribieron un post en LaDataWeb sobre "Usar Power Bi API
+sin permiso del administrador" y hoy quiero completarlo añadiendo la opción de
 usar Service Princial en vez de usuario y ya que estamos, como hacerlo desde
 Data Factory.</p><p>En general, los
 usuarios siempre estarán interesados en mostrar siempre el último dato o
 actualización disponible. Podríamos programar una actualización del DataSet de
 Power BI en determinado horario o cada cierta cantidad de horas, pero si
 hacemos la carga y transformación de los datos desde un pipeline… ¿Por qué no
-hacer la actualización apenas finaliza? La respuesta es “deberíamos”, puesto
+hacer la actualización apenas finaliza? La respuesta es "deberíamos", puesto
 que es mejor para tener todo el flujo orquestado por una sola herramienta. Para
 esto, agregaremos a nuestro pipeline de Data Factory la actualización del
 DataSet y estaremos siempre al día.  </p><p>Seguiremos con la
@@ -70,8 +70,8 @@ del lado de Power BI…</h2><p>Primero
 debemos asegurarnos qué se les permita a los Service Principals usar la API de
 Power BI. Para este paso necesitaremos los permisos de administrador o pedirle al
 administrador de Power BI que nos dé una mano y lo habilite por nosotros. </p><p>En el
-Admin Portal de Power BI, en la pestaña de “<i>Tenant Settings</i>” se debe habilitar
-(Enable) la opción “<i>Allow service principals to use Power BI APIs</i>”. Acá
+Admin Portal de Power BI, en la pestaña de "<i>Tenant Settings</i>" se debe habilitar
+(Enable) la opción "<i>Allow service principals to use Power BI APIs</i>". Acá
 hay dos opciones, se puede habilitar para toda la organización o para un grupo
 de seguridad en particular (en ese caso generar Grupo de Seguridad en Azure
 Active Directory y agregar al Service Principal como miembro de este).</p><p>Por
@@ -91,14 +91,14 @@ secreto que habíamos guardado en el Key Vault. </p><p><b>Direccion URL</b>: ht
 Data Factory en el Key Vault)<br/><b>Recurso</b>: <a href="https://vault.azure.net" target="_blank">https://vault.azure.net</a></p><p>En la pestaña General seleccionar <i>Salida
 segura</i> para que no quede expuesto el secreto.</p><figure class="tmblr-full" data-orig-height="351" data-orig-width="955"><img alt="image" data-orig-height="351" data-orig-width="955" src="https://64.media.tumblr.com/bd229156c2facc55397588bd4e87a9b9/a3048248db9b80c1-2a/s540x810/62aec6535ed36352a9e446f3dcda81dc23d953ed.png"/></figure><p>2- Obtener
 Bearer Token</p><p>En este paso obtendremos el Bearer
-Token para autentificarnos en la API de Power BI</p><p><b>Direccion URL</b>: <a href="https://login.microsoftonline.com/@%7Bpipeline" target="_blank">https://login.microsoftonline.com/@{pipeline</a>().parameters.tenant_id}/oauth2/token<br/><b>Método</b>: POST<br/><b>Encabezados</b>: Content-Type application/x-www-form-urlencoded<br/><b>Cuerpo</b>: grant_type=client_credentials&amp;client_id=@{pipeline().parameters.service_principal_client_id}&amp;client_secret=@{activity(‘Service
+Token para autentificarnos en la API de Power BI</p><p><b>Direccion URL</b>: <a href="https://login.microsoftonline.com/@%7Bpipeline" target="_blank">https://login.microsoftonline.com/@{pipeline</a>().parameters.tenant_id}/oauth2/token<br/><b>Método</b>: POST<br/><b>Encabezados</b>: Content-Type application/x-www-form-urlencoded<br/><b>Cuerpo</b>: grant_type=client_credentials&amp;client_id=@{pipeline().parameters.service_principal_client_id}&amp;client_secret=@{activity('Service
 Principal Secret desde
-AKV’).output.value}&amp;resource=https://analysis.windows.net/powerbi/api</p><p>En la pestaña General seleccionar <i>Entrada
+AKV').output.value}&amp;resource=https://analysis.windows.net/powerbi/api</p><p>En la pestaña General seleccionar <i>Entrada
 segura</i> para que no quede expuesto el secreto.</p><figure class="tmblr-full" data-orig-height="374" data-orig-width="980"><img alt="image" data-orig-height="374" data-orig-width="980" src="https://64.media.tumblr.com/a7c7c4a0fec00de12b9021a519d020e8/a3048248db9b80c1-3d/s540x810/3f54ddf1037c7a22f8b9cc67dff525f9412c925c.png"/></figure><p>3- Refrescar
 DataSet<br/></p><p>En este paso obtendremos haremos
 finalmente el <i>refresh</i> del <i>DataSet</i> a través de la API de Power BI </p><p><b>Direccion URL</b>: <a href="https://api.powerbi.com/v1.0/myorg/groups/@%7Bpipeline" target="_blank">https://api.powerbi.com/v1.0/myorg/groups/@{pipeline</a>().parameters.group_id}/datasets/@{pipeline().parameters.dataset_id}/refreshes<br/><b>Método</b>: POST<br/><b>Encabezados</b>:<br/>·       Content-Type application/json<br/>·      
 Authorization Bearer
-@{activity('Obtener Bearer Token’).output.access_token}<br/><b>Cuerpo</b>: {“parametro”:“no borrar”}</p><p>En la pestaña General seleccionar <i>Entrada
+@{activity('Obtener Bearer Token').output.access_token}<br/><b>Cuerpo</b>: {"parametro":"no borrar"}</p><p>En la pestaña General seleccionar <i>Entrada
 segura</i> para que no quede expuesto el secreto.</p><figure class="tmblr-full" data-orig-height="361" data-orig-width="994"><img alt="image" data-orig-height="361" data-orig-width="994" src="https://64.media.tumblr.com/dea585414b8c61425ffb4798029fe9db/a3048248db9b80c1-d1/s540x810/50ff812502c58360d6f584cbf47d7d226efe6868.png"/></figure><p>Ahora ya hemos realizado el <i>refresh</i>
 en el <i>DataSet</i>, pero no sabemos si ha terminado exitosamente, agregaremos
 unos cuantos pasos más al pipeline para asegurarnos que así sea. </p><p>4- Hasta
@@ -106,14 +106,14 @@ refresh completo</p><p>
 
 El paso 4 consiste en hacer otra llamada a una API de Power BI solicitando esta información.
 
-Utilizaremos una Actividad de “Hasta”
+Utilizaremos una Actividad de "Hasta"
 en la que ejecutaremos una API que solicita información sobre los <i>refresh</i>
-del <i>DataSet</i> hasta que la respuesta no nos devuelva el estado “<i>Unkown</i>”
+del <i>DataSet</i> hasta que la respuesta no nos devuelva el estado "<i>Unkown</i>"
 que es aquel estado que devuelve la API mientras el <i>refresh</i> está en
-progreso. </p><p>Le estableceremos “Tiempo de espera
-agotado” de 1 hora ya que este es el tiempo que tiene validez el Bearer Token. </p><p><b>Expresión</b>: @not(equals('Unknown’,variables('Status’)))<br/><b>Esperar:<br/></b><b>      Tiempo
+progreso. </p><p>Le estableceremos "Tiempo de espera
+agotado" de 1 hora ya que este es el tiempo que tiene validez el Bearer Token. </p><p><b>Expresión</b>: @not(equals('Unknown',variables('Status')))<br/><b>Esperar:<br/></b><b>      Tiempo
 de espera en segundos: </b>@int(pipeline().parameters.wait_seconds)<br/><b>Refresh Status</b>:<br/>      <b>Dirección
 URL</b>:<br/><a href="https://api.powerbi.com/v1.0/myorg/groups/@%7Bpipeline" target="_blank">https://api.powerbi.com/v1.0/myorg/groups/@{pipeline</a>().parameters.group_id}/datasets/@{pipeline().parameters.dataset_id}/refreshes?$top=1<br/>      <b>Método</b>: GET<br/>      <b>Encabezados</b>:
-Authorization Bearer @{activity('Obtener Bearer Token’).output.access_token}<br/><b>Status</b>:<br/>      <b>Valor</b>:
-@activity('Refresh Status’).output.value[0].status</p><figure class="tmblr-full" data-orig-height="780" data-orig-width="999"><img alt="image" data-orig-height="780" data-orig-width="999" src="https://64.media.tumblr.com/f9d92aa826fab98c318b9bb2341ed552/a3048248db9b80c1-e2/s540x810/20143975b00b6847c10dad0dfd1038ea61e39c6e.png"/></figure><p>Así concluimos nuestra configuración para llamar un refresh de un dataset en Power Bi desde Azure Data Factory.</p><p>Espero que les haya sido de
+Authorization Bearer @{activity('Obtener Bearer Token').output.access_token}<br/><b>Status</b>:<br/>      <b>Valor</b>:
+@activity('Refresh Status').output.value[0].status</p><figure class="tmblr-full" data-orig-height="780" data-orig-width="999"><img alt="image" data-orig-height="780" data-orig-width="999" src="https://64.media.tumblr.com/f9d92aa826fab98c318b9bb2341ed552/a3048248db9b80c1-e2/s540x810/20143975b00b6847c10dad0dfd1038ea61e39c6e.png"/></figure><p>Así concluimos nuestra configuración para llamar un refresh de un dataset en Power Bi desde Azure Data Factory.</p><p>Espero que les haya sido de
 utilidad.<br/>¡Gracias por leer! <br/>Nos vemos la próxima 😊</p><p><i>Escrito por <a href="https://www.linkedin.com/in/josefina-depetris/" target="_blank">Josefina Depetris</a></i></p>

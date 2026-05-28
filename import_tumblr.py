@@ -48,6 +48,21 @@ def clean_body(soup):
     html = "".join(str(node) for node in body.contents).strip()
     html = html.replace("[[MORE]]", "")
     return html
+    
+def escape_liquid_syntax(html):
+    html = html.replace("{{", "&#123;&#123;")
+    html = html.replace("}}", "&#125;&#125;")
+    html = html.replace("{%", "&#123;%")
+    html = html.replace("%}", "%&#125;")
+    return html
+    
+def normalize_smart_quotes(html):
+    return (
+        html.replace("“", '"')
+            .replace("”", '"')
+            .replace("‘", "'")
+            .replace("’", "'")
+    )
 
 def process_file(path):
     post_id = path.stem
@@ -57,6 +72,8 @@ def process_file(path):
     dt = extract_timestamp(soup)
     tags = extract_tags(soup)
     body = clean_body(soup)
+    body = normalize_smart_quotes(body)
+    body = escape_liquid_syntax(body)
 
     if not dt:
         raise ValueError(f"No se encontró fecha en {path.name}")

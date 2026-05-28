@@ -29,7 +29,7 @@ llega el momento en el que hay que compartir datos que tenemos en nuestro data
 lake con personas/equipos que desean usarlos y accederlos, externos al equipo
 que desarrollo la ingesta y transformación de datos. Este es un punto que
 muchos saben que eventualmente habrá que hacer, pero como no es vital al
-comienzo de un proyecto entonces se saltea (la conocida “deuda técnica”)
+comienzo de un proyecto entonces se saltea (la conocida "deuda técnica")
 y luego cuando aparece la necesidad, ¡estamos en un apuro por resolverlo! En
 este articulo voy a mostrar algunas de las opciones que tenemos para dar este
 tipo de permisos sin que esto sea un peligro para todo el trabajo que venimos
@@ -44,7 +44,7 @@ snapshots de determinadas carpetas dentro de nuestro data lake. Esta opción es
 práctica pero tiene varias desventajas, la principal es que estamos replicando
 datos fuera de nuestro data lake (quien recibe el Data Share, debe mapear el
 snapshot a su propio data lake), esto da pie a que haya diferentes
-“versiones” de los datos y quien desee consultarlos no estará usando
+"versiones" de los datos y quien desee consultarlos no estará usando
 los datos actualizados, además de estar pagando por almacenamiento que no debería
 con otras opciones.</p>
 <h2><i>2- SFTP</i></h2>
@@ -64,7 +64,7 @@ que el usuario lea directamente el data lake como otras opciones, y este
 servidor SFTP no es accesible por Data Factory (por ahora, ojalá cambie esto en
 un futuro).</p>
 <p>Muchos clientes son capaces de conectarse a un servidor SFTP como
-si se tratase de una “carpeta remota” para descargar o subir
+si se tratase de una "carpeta remota" para descargar o subir
 archivos, de modo que es una opción practica para compartir datos con usuarios
 de todo tipo (negocio o técnicos). Los clientes clásicos para windows son
 WinSCP o FileZilla, pero ¡hay muchos más! (ni hablar para linux)</p>

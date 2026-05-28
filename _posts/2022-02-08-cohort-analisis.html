@@ -44,89 +44,89 @@ observa, en el mes de enero (01/01/2007), del total de clientes nuevos (182)
 sólo 7 han vuelto a comprar en febrero. </i></p><p>Se estudia la
 cantidad de clientes que han adquirido nuestro producto/servicio por primera
 vez y luego vuelven a adquirirlo en los posteriores meses/semanas.<i></i></p><h2><b>Modelo</b></h2><figure class="tmblr-full" data-orig-height="414" data-orig-width="532"><img alt="image" data-orig-height="414" data-orig-width="532" src="https://64.media.tumblr.com/7e52fe517466b4b19292d343a4de8fc0/24543b1e21fec071-55/s540x810/84573173e6e7a3221db3aa881e985f09a8474825.png"/></figure><p>El modelo cuenta
-con 2 tablas auxiliares “Mes Auxiliar” y “Semana Auxiliar” que no están relacionadas
+con 2 tablas auxiliares "Mes Auxiliar" y "Semana Auxiliar" que no están relacionadas
 a las tablas Fecha (Dimensión) y Ventas (Hecho), esto se debe a que
 posteriormente, necesitaremos aplicar y controlar estas columnas dentro de las
 medidas correspondientes. </p><p><b>Tabla Auxiliar
-en Power Query para el análisis de meses:</b></p><blockquote><p>let<br/>   Source = List.Numbers(0, 12),<br/>   #“Converted to
-Table” =
+en Power Query para el análisis de meses:</b></p><blockquote><p>let<br/>   Source = List.Numbers(0, 12),<br/>   #"Converted to
+Table" =
 Table.RenameColumns(Table.TransformColumnTypes(Table.FromList(Source,
 Splitter.SplitByNothing(), null, null,
-ExtraValues.Error),{{“Column1”, Int64.Type}}),{{“Column1”,
-“valor”}}),<br/>   #“Added
-Custom” = Table.AddColumn(#“Converted to Table”,
-“Mes”, each “Mes ” &amp; Number.ToText([valor]),type text)<br/>in<br/>   #“Added Custom”</p></blockquote><p><b>Tabla Auxiliar
-en Power Query para el análisis de semanas:</b></p><blockquote><p>let<br/>   Source = List.Numbers(0, 53),<br/>   #“Converted to
-Table” =
+ExtraValues.Error),&#123;&#123;"Column1", Int64.Type&#125;&#125;),&#123;&#123;"Column1",
+"valor"&#125;&#125;),<br/>   #"Added
+Custom" = Table.AddColumn(#"Converted to Table",
+"Mes", each "Mes " &amp; Number.ToText([valor]),type text)<br/>in<br/>   #"Added Custom"</p></blockquote><p><b>Tabla Auxiliar
+en Power Query para el análisis de semanas:</b></p><blockquote><p>let<br/>   Source = List.Numbers(0, 53),<br/>   #"Converted to
+Table" =
 Table.RenameColumns(Table.TransformColumnTypes(Table.FromList(Source,
 Splitter.SplitByNothing(), null, null,
-ExtraValues.Error),{{“Column1”, Int64.Type}}),{{“Column1”,
-“valor”}}),<br/>   #“Added
-Custom” = Table.AddColumn(#“Converted to Table”,
-“Semana”, each “Semana ” &amp; Number.ToText([valor]), type
-text)<br/>in<br/>   #“Added Custom”</p></blockquote><p>Luego de cerrar y
-aplicar las tablas es importante recordar ordenar las columnas de “Mes” y
-“Semana” de manera ascendente para que se visualicen correctamente en el
+ExtraValues.Error),&#123;&#123;"Column1", Int64.Type&#125;&#125;),&#123;&#123;"Column1",
+"valor"&#125;&#125;),<br/>   #"Added
+Custom" = Table.AddColumn(#"Converted to Table",
+"Semana", each "Semana " &amp; Number.ToText([valor]), type
+text)<br/>in<br/>   #"Added Custom"</p></blockquote><p>Luego de cerrar y
+aplicar las tablas es importante recordar ordenar las columnas de "Mes" y
+"Semana" de manera ascendente para que se visualicen correctamente en el
 reporte.</p><figure class="tmblr-full" data-orig-height="168" data-orig-width="658"><img alt="image" data-orig-height="168" data-orig-width="658" src="https://64.media.tumblr.com/9956d08b26e4f6ba7992f7e9623514e5/24543b1e21fec071-31/s540x810/e79ff86c9163b124866d4bab60c30b3af681d4c1.png"/></figure><h2><b>Medidas y
 Filtros</b></h2><p>La solución requiere
 de medidas mensuales y semanales. </p><p>Partiremos calculando
 la <b>cantidad </b>de clientes que fueron retenidos, es decir que luego de su
 primer mes/semana de compra volvieron a comprar en los periodos posteriores. </p><blockquote><p>Retención de Clientes Mensual =<br/>VAR __MesInicial =<br/>   SELECTEDVALUE ( Fecha[MesAño] ) //Número de mes y año de
-la tabla dimensión Fecha<br/>VAR __AuxMes =<br/>   SELECTEDVALUE ( ‘Mes
-Auxiliar’[valor] ) //Número
+la tabla dimensión Fecha<br/>VAR __AuxMes =<br/>   SELECTEDVALUE ( 'Mes
+Auxiliar'[valor] ) //Número
 de mes de la tabla auxiliar mensual<br/>VAR __ClientesActuales =<br/>   VALUES ( 'Fact
-Ventas’[CustomerKey] ) //Tabla
+Ventas'[CustomerKey] ) //Tabla
 con valores únicos para cada clave principal de cliente<br/>VAR __ClientesPasados =<br/>   CALCULATETABLE (<br/>       VALUES ( 'Fact
-Ventas’[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[MesAño] &lt; __MesInicial<br/>   ) //Tabla con valores únicos para cada clave principal de
+Ventas'[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[MesAño] &lt; __MesInicial<br/>   ) //Tabla con valores únicos para cada clave principal de
 clientes con fecha de compra anterior a la actual<br/>VAR __NuevosClientes =<br/>   EXCEPT ( __ClientesActuales, __ClientesPasados ) //Tabla que contiene clientes actuales que no están en la
 tabla de clientes pasados<br/>VAR __ClientesPosteriores =<br/>   CALCULATETABLE (<br/>       VALUES ( 'Fact
-Ventas’[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[MesAño] = __MesInicial + __AuxMes<br/>   ) //Tabla que contiene clientes con fecha de compra
+Ventas'[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[MesAño] = __MesInicial + __AuxMes<br/>   ) //Tabla que contiene clientes con fecha de compra
 posterior a la actual<br/>VAR __ClientesRetenidos =<br/>   INTERSECT ( __NuevosClientes, __ClientesPosteriores ) //Tabla con aquellos nuevos clientes que también están en
 la tabla de clientes con fecha de compra posterior a la actual<br/>RETURN<br/>   COUNTROWS ( __ClientesRetenidos ) //Total de clientes
 retenidos</p></blockquote><p>Ahora veamos la medida semanal</p><blockquote><p>Retención de Clientes Semanal =<br/>VAR __SemanaInicial =<br/>   SELECTEDVALUE ( Fecha[Año
 Semana] ) //Número
 de semana en el año de la tabla dimensión Fecha<br/>VAR __AuxSemana =<br/>   SELECTEDVALUE ( 'Semana
-Auxiliar’[valor] ) //Número
+Auxiliar'[valor] ) //Número
 de semana de la tabla auxiliar semanal<br/>VAR __ClientesActuales =<br/>   VALUES ( 'Fact
-Ventas’[CustomerKey] ) //Tabla
+Ventas'[CustomerKey] ) //Tabla
 con valores únicos para cada clave principal de cliente<br/>VAR __ClientesPasados =<br/>   CALCULATETABLE (<br/>       VALUES ( 'Fact
-Ventas’[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[Año
+Ventas'[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[Año
 Semana]  &lt; __SemanaInicial<br/>   ) //Tabla con valores únicos para cada clave principal de
 clientes con fecha de compra anterior a la semana actual<br/>VAR __NuevosClientes =<br/>   EXCEPT ( __ClientesActuales, __ClientesPasados ) //Tabla que contiene clientes actuales que no están en la
 tabla de clientes pasados<br/>VAR __ClientesPosteriores =<br/>   CALCULATETABLE (<br/>       VALUES ( 'Fact
-Ventas’[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[Año
+Ventas'[CustomerKey] ),<br/>       ALL ( Fecha ),<br/>       Fecha[Año
 Semana]  = __SemanaInicial + __AuxSemana<br/>   ) //Tabla que contiene clientes con fecha de compra
 posterior a la actual<br/>VAR __ClientesRetenidos =<br/>   INTERSECT ( __NuevosClientes, __ClientesPosteriores )<br/>  //Tabla con aquellos nuevos clientes que también están en
 la tabla de clientes con fecha de compra posterior a la actual<br/>RETURN<br/>   COUNTROWS ( __ClientesRetenidos ) //Total de clientes
 retenidos</p></blockquote><p>Así como
 obtuvimos la cantidad, es importante también, conocer los valores en
 porcentaje, en relación con los nuevos clientes del primer periodo analizado.<br/></p><blockquote><p>Retención de Clientes Mensual % =<br/>DIVIDE (<br/>   [Retención de Clientes Mensual],<br/>   CALCULATE (<br/>       [Retención de Clientes Mensual],<br/>       ALL ( 'Mes
-Auxiliar’ ),<br/>       'Mes Auxiliar’[valor] = 0<br/>   )<br/>)<br/>//Porcentaje de nuevos clientes que vuelven a comprar en
+Auxiliar' ),<br/>       'Mes Auxiliar'[valor] = 0<br/>   )<br/>)<br/>//Porcentaje de nuevos clientes que vuelven a comprar en
 los meses posteriores a su primera compra</p></blockquote><blockquote><p>Retención de Clientes Semanal % =<br/>DIVIDE (<br/>   [Retención de Clientes Semanal],<br/>   CALCULATE (<br/>       [Retención de Clientes Semanal],<br/>       ALL ( 'Semana
-Auxiliar’ ),<br/>       'Semana Auxiliar’[valor] = 0<br/>   )<br/>)<br/>//Porcentaje de nuevos clientes que vuelven a comprar en
+Auxiliar' ),<br/>       'Semana Auxiliar'[valor] = 0<br/>   )<br/>)<br/>//Porcentaje de nuevos clientes que vuelven a comprar en
 las semanas posteriores a su primera compra</p></blockquote><p>A la
 hora de presentar los resultados, en cuanto a la <b>unidad de medida</b>, se
-crea una tabla auxiliar “Auxiliar Unidad” con las siguientes opciones de
-selección para incorporar la columna de “Unidad” a la visualización de Slicer.<br/></p><figure data-orig-height="49" data-orig-width="129"><img alt="image" data-orig-height="49" data-orig-width="129" src="https://64.media.tumblr.com/05b433b9f0daf84a0f78b5b4e2cdf4fd/24543b1e21fec071-bc/s540x810/5df5a5f88d83f65b3fbc91d6ee28113aedb083d5.png"/></figure><h2><b>Tabla
+crea una tabla auxiliar "Auxiliar Unidad" con las siguientes opciones de
+selección para incorporar la columna de "Unidad" a la visualización de Slicer.<br/></p><figure data-orig-height="49" data-orig-width="129"><img alt="image" data-orig-height="49" data-orig-width="129" src="https://64.media.tumblr.com/05b433b9f0daf84a0f78b5b4e2cdf4fd/24543b1e21fec071-bc/s540x810/5df5a5f88d83f65b3fbc91d6ee28113aedb083d5.png"/></figure><h2><b>Tabla
 Auxiliar de Unidad de Medida en Power Query:</b></h2><blockquote><p> let<br/>   Source =
-Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(“i45Wck7MK8lMSUxR0lEyVIrViVYKyC9KTs0rScxKBQoZKcXGAgA=”,
+Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45Wck7MK8lMSUxR0lEyVIrViVYKyC9KTs0rScxKBQoZKcXGAgA=",
 BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text)
-meta [Serialized.Text = true]) in type table [Unidad = _t, #“Index
-Unidad” = _t]),<br/>   #“Changed
-Type” = Table.TransformColumnTypes(Source,{{“Unidad”, type
-text}, {“Index Unidad”, Int64.Type}})<br/>in<br/>   #“Changed Type”</p></blockquote><p>Mediante nuestras
+meta [Serialized.Text = true]) in type table [Unidad = _t, #"Index
+Unidad" = _t]),<br/>   #"Changed
+Type" = Table.TransformColumnTypes(Source,&#123;&#123;"Unidad", type
+text}, {"Index Unidad", Int64.Type&#125;&#125;)<br/>in<br/>   #"Changed Type"</p></blockquote><p>Mediante nuestras
 medidas se asignan los valores que calculamos con anterioridad a cada unidad de
 medida con sus distintos formatos:</p><blockquote><p>Retención de Clientes Mensual - Unidad =<br/>VAR _Unidad =<br/>   SELECTEDVALUE ( 'Auxiliar
-Unidad’[Index Unidad] )<br/>RETURN<br/>   IF (<br/>       _Unidad = 1,<br/>       [Retención de Clientes Mensual],<br/>       IF ( _Unidad = 2, FORMAT ( [Retención
-de Clientes Mensual %], “0.00%”) )<br/>   )</p></blockquote><blockquote><p>Retención de Clientes Semanal - Unidad =<br/>VAR _Unidad =<br/>   SELECTEDVALUE ( 'Auxiliar
-Unidad’[Index Unidad] )<br/>RETURN<br/>   IF (<br/>       _Unidad = 1,<br/>       [Retención de Clientes Semanal],<br/>       IF ( _Unidad = 2, FORMAT ( [Retención
-de Clientes Semanal %], “0.00%”) )<br/>   )</p></blockquote><p>Debido a que cada
+Unidad'[Index Unidad] )<br/>RETURN<br/>   IF (<br/>       _Unidad = 1,<br/>       [Retención de Clientes Mensual],<br/>       IF ( _Unidad = 2, FORMAT ( [Retención
+de Clientes Mensual %], "0.00%") )<br/>   )</p></blockquote><blockquote><p>Retención de Clientes Semanal - Unidad =<br/>VAR _Unidad =<br/>   SELECTEDVALUE ( 'Auxiliar
+Unidad'[Index Unidad] )<br/>RETURN<br/>   IF (<br/>       _Unidad = 1,<br/>       [Retención de Clientes Semanal],<br/>       IF ( _Unidad = 2, FORMAT ( [Retención
+de Clientes Semanal %], "0.00%") )<br/>   )</p></blockquote><p>Debido a que cada
 matriz requiere distintas filas y columnas según la opción de visualización,
 sea mensual o semanal, se opta por el uso de bookmarks para hacer dinámico el
 periodo de tiempo.</p><figure class="tmblr-full" data-orig-height="326" data-orig-width="822"><img alt="image" data-orig-height="326" data-orig-width="822" src="https://64.media.tumblr.com/3103eaa4365c1d41bd36cd9e6e84d536/24543b1e21fec071-f9/s540x810/67dba97a841664404833c2570e0c4f4674cbcdd1.gif"/></figure><p><b>Visualización de Matriz:</b></p><p><i>Filas:
 Mes en formato de fecha / Semana en formato de fecha</i></p><p><i>Columnas:
-Columna de Mes en tabla “Mes Auxiliar” / Columna de Semana en tabla “Semana
-Auxiliar” </i></p><p><i>Valores:  Retención
+Columna de Mes en tabla "Mes Auxiliar" / Columna de Semana en tabla "Semana
+Auxiliar" </i></p><p><i>Valores:  Retención
 de Clientes Mensual – Unidad / Retención de Clientes Semanal – Unidad</i></p><p>¡Es así como llegamos
 a completar el análisis!<br/></p><p>En <a href="https://github.com/ibarrau/PowerBi-code/blob/master/PowerBi%20Reports/Cohort%20An%C3%A1lisis.pbix" target="_blank">GitHub </a>se
 encuentra el archivo Power Bi Desktop a modo de ejemplo.</p><p>Espero les sea

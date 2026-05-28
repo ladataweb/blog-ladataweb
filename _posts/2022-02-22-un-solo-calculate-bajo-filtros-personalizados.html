@@ -24,33 +24,33 @@ perspectiva a un requerimiento. Puede que tras leerlo les parezca un
 requerimiento muy sencillo, pero vamos a mostrar condiciones requeridas que lo
 harías más eficiente y complicado.<br/></p><p>La idea será llevar una sencilla solución basada en SWITCH según
 condiciones a una única medida con un único CALCULATE capas de filtrar una
-opción u otra incluyendo opción para “all/todos”. </p><p>Veamos entonces esta curiosidad en DAX.</p><p>Hace tiempo había llegado un requerimiento bastante casual
+opción u otra incluyendo opción para "all/todos". </p><p>Veamos entonces esta curiosidad en DAX.</p><p>Hace tiempo había llegado un requerimiento bastante casual
 en que el usuario esperaba que luego de filtrar un segmentador, sucediera
 cierta acción. </p><p>Supongamos una tabla InternetSales que contiene una columna
 StoreSell. El usuario quería un filtro con las siguientes tres opciones:</p><ul><li>Owned son las ventas con InternetSales[StoreSell] = 1</li><li>Foreign son las ventas con InternetSales[StoreSell] = 0</li><li>All son todas las ventas</li></ul><p>A simple vista uno podría pensar que hace una tabla con esos
-tres valores y una medida con un SWITCH preguntando si es “Owned” hacer un calculate
+tres valores y una medida con un SWITCH preguntando si es "Owned" hacer un calculate
 filtrando eso y así con cada uno.</p><p>La cuestión se complica porque el usuario es técnico y no le
 hace gracia tener un CALCULATE en cada respuesta del SWITCH. Más aún agrega que
-al no seleccionar ninguno, debe mostrar por defecto lo mismo que “Owned”.</p><p>En un principio parecía imposible hasta que cambiamos el
+al no seleccionar ninguno, debe mostrar por defecto lo mismo que "Owned".</p><p>En un principio parecía imposible hasta que cambiamos el
 modo de pensar. El Switch no ayudaría a hacer un calculo distinto sino a
-construir el argumento “[Filter]” dentro de un única CALCULATE. El argumento
+construir el argumento "[Filter]" dentro de un única CALCULATE. El argumento
 Filter de CALCULATE permite construir un filtro bajo una condición o una tabla
 especifica bajo la cual manejar el contexto. Entonces la idea sería que loguremos
 que InternetSales[StoreSell] sea igual al valor seleccionado en el filtro visual
 dentro de nuestra medida. </p><p>Para capturar esto vamos a generar una tabla. Si una tabla
-que contenga una o dos filas. Vamos a revisar que cuando el filtro sea “Foreign”
-la tabla tendría una fila y columna con un 0. Luego al clickear “All” debería
-devolver dos filas, un 1 y un 0. Finalmente, no como “Awned” sino como valor
+que contenga una o dos filas. Vamos a revisar que cuando el filtro sea "Foreign"
+la tabla tendría una fila y columna con un 0. Luego al clickear "All" debería
+devolver dos filas, un 1 y un 0. Finalmente, no como "Awned" sino como valor
 por defecto estaría la tabla con un 1 dado que si no clickeamos nada el usuario
-espera ver “Owned”.</p><p>Esto se generaría gracias a GENERATESERIES y lo haremos según
+espera ver "Owned".</p><p>Esto se generaría gracias a GENERATESERIES y lo haremos según
 el valor seleccionado de una tablita con los tres valores</p><figure class="tmblr-full" data-orig-height="213" data-orig-width="720"><img alt="image" data-orig-height="213" data-orig-width="720" src="https://64.media.tumblr.com/b33887a0d2b410dd58ec1dcadbea8af2/d9d8915a28ef3523-d4/s540x810/548f9131f1c020182d4d4396057b5a8287fdb2c8.png"/></figure><p>De ese modo podremos construir una tablita pequeña, para
 nuestro contexto, que contiene el significado del filtro. A modo de ejemplo
-chequeamos el valor de “All” en dax.do</p><figure data-orig-height="289" data-orig-width="221"><img alt="image" data-orig-height="289" data-orig-width="221" src="https://64.media.tumblr.com/d0983c772a0b75d17cdb2db8e3d60da7/d9d8915a28ef3523-6b/s540x810/b1426ed1c5a367b80b2972070173d3965c576eb4.png"/></figure><p>Sabiendo que nuestras tablas funcionan, podemos construir
+chequeamos el valor de "All" en dax.do</p><figure data-orig-height="289" data-orig-width="221"><img alt="image" data-orig-height="289" data-orig-width="221" src="https://64.media.tumblr.com/d0983c772a0b75d17cdb2db8e3d60da7/d9d8915a28ef3523-6b/s540x810/b1426ed1c5a367b80b2972070173d3965c576eb4.png"/></figure><p>Sabiendo que nuestras tablas funcionan, podemos construir
 nuestro cálculo. </p><p>La magia de la medida será el operar IN y conocer que
 podemos tomar la tabla de una variable tan simplemente incorporando unas llaves.
 Las llaves convierten valores, que no están físicamente almacenadas en el
 modelo, en una tabla. Sería como un constructor de tabla en la cual se
-especifica el contenido “virtual”. Veamos la medida</p><blockquote><div><code>Solucion = <br/>VAR _hey =<br/>SWITCH(<br/>        SELECTEDVALUE(StoreFilter[StoreType]),<br/>        "Foreign", GENERATESERIES(0,0,1),<br/>        "All", GENERATESERIES(0,1,1),<br/>        GENERATESERIES(1,1,1)<br/>    )<br/>VAR _result =<br/>CALCULATE(<br/>    [Sales],<br/>    InternetSales[StoreSell] IN {_hey}<br/>)<br/>RETURN_result</code></div></blockquote><p>De este modo vemos que podemos pensar de otro modo, llevando
+especifica el contenido "virtual". Veamos la medida</p><blockquote><div><code>Solucion = <br/>VAR _hey =<br/>SWITCH(<br/>        SELECTEDVALUE(StoreFilter[StoreType]),<br/>        "Foreign", GENERATESERIES(0,0,1),<br/>        "All", GENERATESERIES(0,1,1),<br/>        GENERATESERIES(1,1,1)<br/>    )<br/>VAR _result =<br/>CALCULATE(<br/>    [Sales],<br/>    InternetSales[StoreSell] IN {_hey}<br/>)<br/>RETURN_result</code></div></blockquote><p>De este modo vemos que podemos pensar de otro modo, llevando
 nuestra selección según el filtro (swtich) a calcular el contexto de nuestro
 calculo y no la respuesta de el cálculo en sí. Veamos un gif de como quedaría. Donde
 la tarjeta de la izquierda cambiará según el filtro y el apartado de la derecha

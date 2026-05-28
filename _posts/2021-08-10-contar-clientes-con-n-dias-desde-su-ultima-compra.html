@@ -36,11 +36,11 @@ semana seleccionada. </li><li>Finalmente,
 asignar un 1 en caso de que esa cantidad de días sea mayor o igual a 90 y menor
 o igual a 90 + la cantidad de días del periodo de la semana seleccionada.<br/>(Al 21/4/2007 aquellos clientes que compraron
 por última vez el 15/1/2007 cumplieron 96 días sin comprar).</li></ol><p>Veamos cada uno de los puntos anteriores en la siguiente medida:</p><blockquote><p>Clientes con 90d sin comprar =<br/>VAR _FechaFin =<br/>   LASTDATE (
-‘Date’[Date] ) // Ultima fecha en la semana seleccionada<br/>VAR _FechaInicial =<br/>   FIRSTDATE (
-'Date’[Date] ) // Primer fecha en la semana seleccionada<br/>VAR _DiasPeriodo =<br/>   DATEDIFF (
+'Date'[Date] ) // Ultima fecha en la semana seleccionada<br/>VAR _FechaInicial =<br/>   FIRSTDATE (
+'Date'[Date] ) // Primer fecha en la semana seleccionada<br/>VAR _DiasPeriodo =<br/>   DATEDIFF (
 _FechaInicial, _FechaFin, DAY ) // Cantidad de dias entre ambas fechas<br/>VAR _Dias
 =<br/>   DATEDIFF (<br/>       CALCULATE (<br/>           LASTDATE ( InternetSales[Delivery
-Date] ),<br/>           ALL ( 'Date’ ),<br/>           InternetSales[Delivery
+Date] ),<br/>           ALL ( 'Date' ),<br/>           InternetSales[Delivery
 Date] &lt; _FechaFin<br/>       ),<br/>       // 1.Ultima
 fecha de compra del cliente, eliminando los filtros de fechas aplicados<br/>       _FechaFin,<br/>       DAY<br/>   ) //
 2.Diferencia en días desde la ultima compra a la ultima fecha de la semana

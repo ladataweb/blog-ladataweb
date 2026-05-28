@@ -48,7 +48,7 @@ tumblr_id: '643382802939822080'
 <p><code>.\rclone.exe ls DataLake1:adventure-works</code></p>
 <p>Si a continuación nos lista las carpetas y archivos que forman el data lake, estamos listos para seguir!</p>
 <h2>Montando nuestro lake como un disco externo</h2>
-<p>Al fin llegamos a la parte donde ocurre la magia! Estamos a solo un comando de lograrlo. En esta parte considero importante aclarar el porque de ejecutar el siguiente comando desde una ventana de PowerShell SIN permisos de admin, y esto es porque vamos a “crear” un disco externo, si hacemos esto con privilegios de admin no podremos verlo con nuestro usuario de Windows (aunque este también sea admin).</p>
+<p>Al fin llegamos a la parte donde ocurre la magia! Estamos a solo un comando de lograrlo. En esta parte considero importante aclarar el porque de ejecutar el siguiente comando desde una ventana de PowerShell SIN permisos de admin, y esto es porque vamos a "crear" un disco externo, si hacemos esto con privilegios de admin no podremos verlo con nuestro usuario de Windows (aunque este también sea admin).</p>
 <p>Ahora sí, sin más vueltas ejecutamos el siguiente comando:</p>
 <p><code>.\rclone.exe mount DataLake1:adventure-works X:</code></p>
 <p>Esto creara un disco X: que será el acceso a nuestro data lake! El disco existirá mientras no cerremos esta ventana que lo creo.</p>

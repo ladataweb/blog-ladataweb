@@ -26,7 +26,7 @@ tumblr_id: '695295016923463680'
 servicios de procesamiento externos.</p>
 <p>Muchas veces se confunde a Data Factory con una herramienta ETL,
 cuando en realidad es un servicio de integración de datos y orquestación de
-procesos. La actividad estrella en Data Factory es el “Copy Activity”
+procesos. La actividad estrella en Data Factory es el "Copy Activity"
 que permite tomar datos de una fuente de datos origen, y los deposita en algún
 almacenamiento destino, y ¡es muy buena haciéndolo! Soporta multitud de orígenes
 y destinos, permite conectar con datos on premise (incluso ODBC), consultar
@@ -89,23 +89,23 @@ más simples de configurar es difícil que valga la pena el esfuerzo.</p>
 almacenados en bases de datos son buenas formas (aunque a veces un poco
 limitadas) de realizar todo tipo de operaciones sobre los datos. Las principales ventajas de este metodo es que casi todo el mundo que haya trabajado con datos sabe o conoce SQL, y que no tendremos un costo extra, ya que se ejecutara sobre el mismo hardware donde está la base. Las desventajas son: </p><ol><li>Los datos necesitan estar en una tabla de la base antes de que sea posible tomarlos para realizarles operaciones (con excepción de Polybase) </li><li>Puede que este método no escale muy bien si los datos a procesar son cada vez más grandes, lo que congestionara la base y la dejara menos rápida para responder consultas mientras este procesando. Esta desventaja puede ser mitigada usando alguna tecnologia de procesamiento paralelo como la que ofrece SQL Pool de Synapse por ejemplo.</li></ol><p>Para llamar a un
 procedimiento almacenado desde Data Factory podemos usar el activity llamado
-“Stored procedure” para la mayoría de las bases de datos. Otro método más
-“rustico” para hacer el llamado es utilizando un Lookup activity, configurando
+"Stored procedure" para la mayoría de las bases de datos. Otro método más
+"rustico" para hacer el llamado es utilizando un Lookup activity, configurando
 en Settings Query y pasando el comando de base de datos para ejecutar un
-procedimiento almacenado (en Sql Server por ejemplo, seria “exec [NombreSP]”),
+procedimiento almacenado (en Sql Server por ejemplo, seria "exec [NombreSP]"),
 esta opción nos permite llamar a procedimientos almacenados en bases de datos
 que no estén soportadas por el Store Procedure Activity (Oracle, IBM, etc).</p>
 <figure class="tmblr-full" data-orig-height="439" data-orig-src="https://i.imgur.com/VuvVFrE.jpg" data-orig-width="574"><img alt="a3" data-orig-height="439" data-orig-src="https://i.imgur.com/VuvVFrE.jpg" data-orig-width="574" src="https://64.media.tumblr.com/a3c93da9a74720477c8079a7b14e962c/44497673ecbacc79-a4/s540x810/275d39785f029e019ccc1e2f0113631fc776f42c.jpg"/></figure><h2><i>Data Factory Data Flows:</i></h2>
 <p>Previamente mencione
 que es prácticamente otra herramienta, pero no por eso es menos valida que las
 otras opciones que hemos visto en este artículo. Tiene la facilidad de ser muy
-visual, muy “estilo Microsoft”. Está integrada a Data Factory por lo que
+visual, muy "estilo Microsoft". Está integrada a Data Factory por lo que
 podremos usarla desde la misma interfaz y es simple hacer llamados a los
 procesos que definamos en este servicio.</p><p>Este servicio utiliza
 la configuración que hayamos puesto en nuestro Azure Integration Runtime para
 levantar un clúster de spark (muy similar a Databricks) donde se ejecutaran las
 operaciones que definamos en el Flow. El costo también es parecido a
-Databricks, solo que en este nos ahorraremos los DBU, que es como la “licencia”
+Databricks, solo que en este nos ahorraremos los DBU, que es como la "licencia"
 por usar databricks. Otra ventaja fuerte que tiene es que nos permite ir paso a
 paso viendo como quedaran los datos para asegurarnos que estamos haciendo las
 operaciones correctas, y que permite el uso del formato Delta Lake (de nuevo,
@@ -131,10 +131,10 @@ Flow, ya que tiene una interfaz integrada al portal de Data Factory. Y se lo
 llama de manera similar también, usando Power Query activity. Lamentablemente
 al día de hoy, esta opción no está disponible en Synapse Pipelines (la versión
 de Data Factory integrada con Synapse)</p>
-<figure class="tmblr-full" data-orig-height="436" data-orig-src="https://i.imgur.com/E77LxJLl.png" data-orig-width="640"><img alt="a5" data-orig-height="436" data-orig-src="https://i.imgur.com/E77LxJLl.png" data-orig-width="640" src="https://64.media.tumblr.com/37920c9a37186f55fdf596d19aa61914/44497673ecbacc79-03/s540x810/02f7ba9c76c8779a4a147b395809512efdb56bb3.jpg"/></figure><h2><i>Integration Services:</i></h2><p>El viejo y confiable SSIS (Sql Server Integration Services) tambien puede ser ejecutado y orquestado por Data Factory. Si bien es un poco incomoda la forma de desarrollar procesos en este servicio, la realidad es que es super comodo si ya tenemos procesos muy grandes y que no podemos migrar por cualquier motivo (no hay tiempo, son procesos legacy, no se van a modificar, etc). Para modificar el proceso tendremos que tener una version de Visual Studio tradicional (no VS code), con el modulo de SSIS instalado, ademas del proyecto de SSIS. Si cumplimos con tener eso, es una herramienta bastante simple que cumple con lo que buscamos: conectamos a diversas fuentes de datos, hacemos transformaciones y guarda el resultado.</p><p>Para usar este metodo, hay que crear un Integration Runtime particular llamado “Azure-SSIS IR”, el cual debera correr sobre una base de datos SQL Server Standard o Enterprise que deberemos crear para este fin. Una vez creada esta base de datos, deberemos abrir el proyecto de SSIS y hacer el deploy del proyecto sobre la misma. El ultimo paso para ejecutar el paquete de SSIS dentro de Data Factory, sera llamarlo desde un pipeline con el activity “Execute SSIS Package”.<br/></p><p>Las desventajas de este metodo son los costos, ya que al tener que usar una licencia de Sql Server, los costos seran altos de entrada. La dificultad para modificar y documentar proyectos existentes es otra contra, al ser una herramienta un poco vieja no esta adaptada al desarrollo en nube, y es mas incomoda que otras opciones.</p><figure class="tmblr-full" data-orig-height="334" data-orig-width="600"><img alt="image" data-orig-height="334" data-orig-width="600" src="https://64.media.tumblr.com/71a54b1d366d72adfd4fae74e035156e/44497673ecbacc79-c4/s540x810/e986e940798414d0aa8ba17da65cf887f6b1067a.png"/></figure><h2><i>Azure Batch:</i></h2>
+<figure class="tmblr-full" data-orig-height="436" data-orig-src="https://i.imgur.com/E77LxJLl.png" data-orig-width="640"><img alt="a5" data-orig-height="436" data-orig-src="https://i.imgur.com/E77LxJLl.png" data-orig-width="640" src="https://64.media.tumblr.com/37920c9a37186f55fdf596d19aa61914/44497673ecbacc79-03/s540x810/02f7ba9c76c8779a4a147b395809512efdb56bb3.jpg"/></figure><h2><i>Integration Services:</i></h2><p>El viejo y confiable SSIS (Sql Server Integration Services) tambien puede ser ejecutado y orquestado por Data Factory. Si bien es un poco incomoda la forma de desarrollar procesos en este servicio, la realidad es que es super comodo si ya tenemos procesos muy grandes y que no podemos migrar por cualquier motivo (no hay tiempo, son procesos legacy, no se van a modificar, etc). Para modificar el proceso tendremos que tener una version de Visual Studio tradicional (no VS code), con el modulo de SSIS instalado, ademas del proyecto de SSIS. Si cumplimos con tener eso, es una herramienta bastante simple que cumple con lo que buscamos: conectamos a diversas fuentes de datos, hacemos transformaciones y guarda el resultado.</p><p>Para usar este metodo, hay que crear un Integration Runtime particular llamado "Azure-SSIS IR", el cual debera correr sobre una base de datos SQL Server Standard o Enterprise que deberemos crear para este fin. Una vez creada esta base de datos, deberemos abrir el proyecto de SSIS y hacer el deploy del proyecto sobre la misma. El ultimo paso para ejecutar el paquete de SSIS dentro de Data Factory, sera llamarlo desde un pipeline con el activity "Execute SSIS Package".<br/></p><p>Las desventajas de este metodo son los costos, ya que al tener que usar una licencia de Sql Server, los costos seran altos de entrada. La dificultad para modificar y documentar proyectos existentes es otra contra, al ser una herramienta un poco vieja no esta adaptada al desarrollo en nube, y es mas incomoda que otras opciones.</p><figure class="tmblr-full" data-orig-height="334" data-orig-width="600"><img alt="image" data-orig-height="334" data-orig-width="600" src="https://64.media.tumblr.com/71a54b1d366d72adfd4fae74e035156e/44497673ecbacc79-c4/s540x810/e986e940798414d0aa8ba17da65cf887f6b1067a.png"/></figure><h2><i>Azure Batch:</i></h2>
 <p>El último servicio
-que veremos aquí es Azure Batch, que es el más “viejo” de todos, se usaba en
-los inicios de Data Factory v2 para ejecutar el “Custom Activity”. Este
+que veremos aquí es Azure Batch, que es el más "viejo" de todos, se usaba en
+los inicios de Data Factory v2 para ejecutar el "Custom Activity". Este
 servicio básicamente nos permite disponibilizar una máquina virtual donde se ejecutará
 un script con las operaciones que necesitemos. Es bastante más complicado de
 configurar que el resto de los servicios, y en mi opinión ofrece poco para
