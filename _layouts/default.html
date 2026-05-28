@@ -50,6 +50,13 @@
 
           <div class="sidebar__content" id="mobile-menu">
             <div class="sidebar__top">
+              <label class="sidebar-search" for="sidebar-post-search">
+                <span class="sidebar-search__label">Buscar artículo</span>
+                <input id="sidebar-post-search" class="sidebar-search__input" type="search" placeholder="Buscar por título...">
+              </label>
+            </div>
+
+            <div class="sidebar__center">
               <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
                 {% if site.logo %}
                   <img src="{{ site.logo | relative_url }}" alt="{{ site.title }}" class="brand__logo">
@@ -58,24 +65,9 @@
                 {% endif %}
               </a>
 
-              <label class="sidebar-search" for="sidebar-post-search">
-                <span class="sidebar-search__label">Buscar artículo</span>
-                <input id="sidebar-post-search" class="sidebar-search__input" type="search" placeholder="Buscar por título...">
-              </label>
-
               <p class="sidebar__description">
                 {{ site.description }}
               </p>
-            </div>
-
-            <div class="sidebar__bottom">
-              <nav class="sidebar__nav sidebar__nav--bottom" aria-label="Principal">
-                <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Inicio</a>
-                <a href="{{ '/archive/' | relative_url }}" {% if page.url == "/archive/" %}aria-current="page"{% endif %}>Archivo</a>
-                {% if site.main_site_url %}
-                  <a href="{{ site.main_site_url }}" target="_blank" rel="noopener">Web principal</a>
-                {% endif %}
-              </nav>
 
               <div class="sidebar__socials" aria-label="Redes sociales">
                 {% if site.socials.x %}
@@ -99,6 +91,16 @@
                 </a>
                 {% endif %}
               </div>
+            </div>
+
+            <div class="sidebar__bottom">
+              <nav class="sidebar__nav sidebar__nav--bottom" aria-label="Principal">
+                <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Inicio</a>
+                <a href="{{ '/archive/' | relative_url }}" {% if page.url == "/archive/" %}aria-current="page"{% endif %}>Artículos</a>
+                {% if site.main_site_url %}
+                  <a href="{{ site.main_site_url }}" target="_blank" rel="noopener">Web principal</a>
+                {% endif %}
+              </nav>
             </div>
           </div>
         </div>
