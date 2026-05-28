@@ -232,7 +232,6 @@ a:hover {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5rem;
 }
 
 .sidebar__nav--bottom a {
