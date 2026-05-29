@@ -153,7 +153,7 @@
           <p class="subscribe-modal__eyebrow">Newsletter</p>
           <h2 class="subscribe-modal__title" id="subscribeModalTitle">Recibí nuevos artículos en tu correo</h2>
           <p class="subscribe-modal__text">
-            Suscribite para enterarte de nuevas publicaciones, tutoriales y novedades sobre datos, Power BI, Fabric, Azure y automatización.
+            Suscribite para enterarte de nuevas publicaciones, tutoriales y novedades sobre nuestros artículos y herramientas.
           </p>
 
           <div class="subscribe-form">
@@ -183,6 +183,51 @@
       </div>
     </div>
 
+    <script>
+		function subscribeMail() {
+				//var dataJ = {'personalizations': [{'to': [{'email': 'igna_barrau@hotmail.com'}],'subject': 'LaData:' +$('#name').val()}],'from': {'email': $('#email').val()},'content': [{'type': 'text/plain','value': $('#message').val()}]};
+
+        if ( $('#correo').val() != "" ) {
+          var dataF = {
+                "correo": $('#correo').val()
+                }
+          $.ajax({
+            url: 'https://prod-13.eastus2.logic.azure.com:443/workflows/c7d41abe51a44b9098c8d897711f8121/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hkAb8QOENYd5HRzXrmYZ09I1ZLE3sL9QxD4upwl_MtQ',
+            headers: {
+              //'Authorization':'Bearer BIG TOKEN',
+              'Content-Type':'application/json'
+            },
+            method: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(dataF),
+            success: function(data, xhr){
+              console.log(xhr.status);
+              //alert('Succes: '+JSON.stringify(dataF));
+              $("#correo").val("");
+              alert("Gracias por suscribirte! Pronto recibirás novedades en tu correo");
+              window.location.href = window.location.href;
+            },
+            error: function(xhr, status, error) {
+              if (xhr.status == 202) {
+                console.log("Código: " + xhr.status + " sigue todo correcto.");
+                $("#correo").val("");
+                alert("Gracias por suscribirte! Pronto recibirás novedades en tu correo");
+                window.location.href = window.location.href;
+              }
+              else {
+                console.log(xhr.status);
+                //var err = eval("(" + xhr.responseText + ")");
+                alert(xhr.responseText + "Error al suscribirse. Por favor contactate con nosotros si queres suscribirte.");
+                //window.location.href = "mailto:igna_barrau@hotmail.com";
+              }
+            } 
+            });				 
+          
+          var modal = document.getElementById("myModal");
+          modal.style.display = "none";
+        }
+			}
+		</script>
     <script>
       (function () {
         var modal = document.getElementById('subscribeModal');
