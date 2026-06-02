@@ -8,6 +8,7 @@
 
 <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ page_description | escape }}">
+<meta name="keywords" content="{{ page.tags | join: ', ' }}">
 
 <link rel="canonical" href="{{ canonical_url }}">
 

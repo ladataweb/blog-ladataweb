@@ -879,6 +879,112 @@ body.modal-open {
   border-color: rgba(243,169,119,0.45);
 }
 
+.tag-browser {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1rem 1.1rem;
+  border: 1px solid rgba(77, 62, 62, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.tag-browser__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.tag-browser__title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.tag-browser__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.82);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tag-browser__toggle:hover {
+  background: rgba(243, 169, 119, 0.14);
+  border-color: rgba(243, 169, 119, 0.45);
+}
+
+.tag-browser__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 38px;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tag-chip:hover {
+  background: rgba(243, 169, 119, 0.14);
+  border-color: rgba(243, 169, 119, 0.45);
+}
+
+.tag-chip.is-active {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  color: #fff;
+}
+
+.tag-chip__name {
+  font-weight: 600;
+  text-transform: none;
+}
+
+.tag-chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: rgba(77, 62, 62, 0.08);
+  color: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tag-chip.is-active .tag-chip__count {
+  background: rgba(255,255,255,0.18);
+}
+
+.archive__content {
+  min-width: 0;
+}
+
+.archive__empty {
+  margin: 1rem 0 0;
+  color: var(--muted);
+}
+
 @media (max-width: 1100px) {
   :root {
     --sidebar-width: 280px;
@@ -1118,6 +1224,24 @@ body.modal-open {
   .subscribe-form__submit,
   .subscribe-form__secondary {
     width: 100%;
+  }
+
+  .tag-browser {
+    padding: 0.9rem;
+  }
+
+  .tag-browser__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tag-browser__toggle {
+    width: 100%;
+  }
+
+  .tag-chip {
+    width: 100%;
+    justify-content: space-between;
   }
 
 }
