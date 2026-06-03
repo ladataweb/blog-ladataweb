@@ -15,33 +15,39 @@ permalink: /archive/
     <input id="archive-tag-search" class="archive-tools__search" type="search" placeholder="Buscar tag...">
   </div>
 
-  <section class="tag-browser" aria-labelledby="tag-browser-title">
-    <div class="tag-browser__header">
-      <h2 id="tag-browser-title" class="tag-browser__title">Tags populares</h2>
-      <button type="button" class="tag-browser__toggle" id="toggleRareTags" aria-expanded="false">
-        Mostrar todos
-      </button>
-    </div>
+  <details class="tag-browser" id="tagBrowser">
+    <summary class="tag-browser__summary">
+      Explorar tags
+      <span class="tag-browser__summary-meta">Ordenados por uso</span>
+    </summary>
 
-    <div class="tag-browser__list" id="tagBrowserList">
-      {% assign sorted_tags = site.tags | sort %}
-      {% for tag in sorted_tags reversed %}
-        {% assign tag_name = tag[0] %}
-        {% assign tag_posts = tag[1] %}
-        {% assign tag_count = tag_posts | size %}
-        <button
-          type="button"
-          class="tag-chip{% if tag_count == 1 %} tag-chip--rare{% endif %}"
-          data-tag="{{ tag_name | downcase }}"
-          data-count="{{ tag_count }}"
-          {% if tag_count == 1 %}hidden{% endif %}
-        >
-          <span class="tag-chip__name">{{ tag_name | replace: '-', ' ' }}</span>
-          <span class="tag-chip__count">{{ tag_count }}</span>
+    <div class="tag-browser__inner">
+      <div class="tag-browser__header">
+        <h2 class="tag-browser__title">Tags</h2>
+        <button type="button" class="tag-browser__toggle" id="toggleRareTags" aria-expanded="false">
+          Mostrar todos
         </button>
-      {% endfor %}
+      </div>
+
+      <div class="tag-browser__list" id="tagBrowserList">
+        {% for tag in site.tags %}
+          {% assign tag_name = tag[0] %}
+          {% assign tag_posts = tag[1] %}
+          {% assign tag_count = tag_posts | size %}
+          <button
+            type="button"
+            class="tag-chip{% if tag_count == 1 %} tag-chip--rare{% endif %}"
+            data-tag="{{ tag_name | downcase }}"
+            data-count="{{ tag_count }}"
+            {% if tag_count == 1 %}hidden{% endif %}
+          >
+            <span class="tag-chip__name">{{ tag_name | replace: '-', ' ' }}</span>
+            <span class="tag-chip__count">{{ tag_count }}</span>
+          </button>
+        {% endfor %}
+      </div>
     </div>
-  </section>
+  </details>
 
   <div class="archive__list" id="archive-list">
     {% for post in site.posts %}
@@ -81,6 +87,7 @@ permalink: /archive/
     var tagSearchInput = document.getElementById('archive-tag-search');
     var archiveItems = Array.prototype.slice.call(document.querySelectorAll('#archive-list .archive__item'));
     var tagButtons = Array.prototype.slice.call(document.querySelectorAll('#tagBrowserList .tag-chip'));
+    var tagBrowserList = document.getElementById('tagBrowserList');
     var toggleRareTagsBtn = document.getElementById('toggleRareTags');
     var emptyState = document.getElementById('archiveEmpty');
 
@@ -89,6 +96,16 @@ permalink: /archive/
 
     function normalize(value) {
       return (value || '').trim().toLowerCase();
+    }
+
+    if (tagBrowserList) {
+      tagButtons
+        .sort(function (a, b) {
+          return parseInt(b.getAttribute('data-count') || '0', 10) - parseInt(a.getAttribute('data-count') || '0', 10);
+        })
+        .forEach(function (button) {
+          tagBrowserList.appendChild(button);
+        });
     }
 
     function syncTagVisibility() {
@@ -143,7 +160,9 @@ permalink: /archive/
     }
 
     if (tagSearchInput) {
-      tagSearchInput.addEventListener('input', syncTagVisibility);
+      tagSearchInput.addEventListener('input', function () {
+        syncTagVisibility();
+      });
     }
 
     tagButtons.forEach(function (button) {

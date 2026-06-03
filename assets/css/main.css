@@ -317,7 +317,7 @@ a:hover {
 .article__eyebrow {
   margin: 0 0 0.9rem;
   color: var(--accent-strong);
-  font-size: 0.78rem;
+  font-size: 0.98rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -881,10 +881,52 @@ body.modal-open {
 
 .tag-browser {
   margin: 0 0 1.5rem;
-  padding: 1rem 1rem 1.1rem;
   border: 1px solid rgba(77, 62, 62, 0.08);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
+  overflow: hidden;
+}
+
+.tag-browser[open] {
+  box-shadow: 0 10px 30px rgba(34, 24, 16, 0.05);
+}
+
+.tag-browser__summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1rem 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.tag-browser__summary::-webkit-details-marker {
+  display: none;
+}
+
+.tag-browser__summary::after {
+  content: "+";
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--soft);
+}
+
+.tag-browser[open] .tag-browser__summary::after {
+  content: "−";
+}
+
+.tag-browser__summary-meta {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--soft);
+}
+
+.tag-browser__inner {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid rgba(77, 62, 62, 0.06);
 }
 
 .tag-browser__header {
@@ -893,7 +935,7 @@ body.modal-open {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.9rem;
+  margin: 1rem 0 0.9rem;
 }
 
 .tag-browser__title {
@@ -926,6 +968,9 @@ body.modal-open {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .tag-chip {
@@ -955,7 +1000,6 @@ body.modal-open {
 
 .tag-chip__name {
   font-weight: 600;
-  text-transform: none;
 }
 
 .tag-chip__count {
@@ -1226,8 +1270,9 @@ body.modal-open {
     width: 100%;
   }
 
-  .tag-browser {
-    padding: 0.9rem;
+  .tag-browser__summary {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .tag-browser__header {
@@ -1242,6 +1287,10 @@ body.modal-open {
   .tag-chip {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .tag-browser__list {
+    max-height: 260px;
   }
 
 }
