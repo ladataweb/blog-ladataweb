@@ -112,13 +112,13 @@ permalink: /archive/
     var showingRareTags = false;
 
     function normalize(value) {
-      return (value || '').trim().toLowerCase();
+      return (value || '').toLowerCase().trim();
     }
 
     if (tagBrowserList) {
       tagButtons
         .sort(function (a, b) {
-          return parseInt(b.getAttribute('data-count') || '0', 10) - parseInt(a.getAttribute('data-count') || '0', 10);
+          return parseInt(b.dataset.count || '0', 10) - parseInt(a.dataset.count || '0', 10);
         })
         .forEach(function (button) {
           tagBrowserList.appendChild(button);
@@ -141,22 +141,22 @@ permalink: /archive/
       var tagQuery = normalize(tagSearchInput ? tagSearchInput.value : '');
 
       tagButtons.forEach(function (button) {
-        var tag = (button.getAttribute('data-tag') || '').toLowerCase();
-        var tagLabelNode = button.querySelector('.tag-chip__name');
-        var tagLabel = tagLabelNode ? tagLabelNode.textContent.toLowerCase() : tag;
-        var count = parseInt(button.getAttribute('data-count') || '0', 10);
+        var tag = normalize(button.dataset.tag || '');
+        var count = parseInt(button.dataset.count || '0', 10);
+        var labelNode = button.querySelector('.tag-chip__name');
+        var label = normalize(labelNode ? labelNode.textContent : '');
 
         var matchesSearch =
-          !tagQuery ||
+          tagQuery === '' ||
           tag.indexOf(tagQuery) !== -1 ||
-          tagLabel.indexOf(tagQuery) !== -1;
+          label.indexOf(tagQuery) !== -1;
 
-        var allowedByCount =
+        var matchesCount =
           showingRareTags ||
           count > 1 ||
           selectedTag === tag;
 
-        button.hidden = !(matchesSearch && allowedByCount);
+        button.style.display = (matchesSearch && matchesCount) ? '' : 'none';
       });
     }
 
@@ -165,8 +165,8 @@ permalink: /archive/
       var visibleCount = 0;
 
       archiveItems.forEach(function (item) {
-        var title = item.getAttribute('data-title') || '';
-        var tags = item.getAttribute('data-tags') || '';
+        var title = normalize(item.getAttribute('data-title') || '');
+        var tags = normalize(item.getAttribute('data-tags') || '');
 
         var matchesTitle = !query || title.indexOf(query) !== -1;
         var matchesTag = !selectedTag || tags.indexOf(selectedTag + '|') !== -1;
@@ -185,10 +185,10 @@ permalink: /archive/
     }
 
     function setSelectedTag(tag) {
-      selectedTag = tag;
+      selectedTag = normalize(tag);
 
       tagButtons.forEach(function (button) {
-        var isActive = button.getAttribute('data-tag') === selectedTag;
+        var isActive = normalize(button.dataset.tag || '') === selectedTag;
         button.classList.toggle('is-active', isActive);
       });
 
@@ -199,6 +199,7 @@ permalink: /archive/
     function openTagPanel() {
       if (!tagPanel) return;
       tagPanel.hidden = false;
+      syncTagVisibility();
       if (tagSearchInput) tagSearchInput.focus();
     }
 
@@ -223,12 +224,18 @@ permalink: /archive/
       tagSearchInput.addEventListener('input', function () {
         syncTagVisibility();
       });
+
+      tagSearchInput.addEventListener('keyup', function (event) {
+        if (event.key === 'Enter') {
+          syncTagVisibility();
+        }
+      });
     }
 
     tagButtons.forEach(function (button) {
       button.addEventListener('click', function () {
-        var clickedTag = button.getAttribute('data-tag') || '';
-        if (selectedTag === clickedTag) {
+        var clickedTag = button.dataset.tag || '';
+        if (selectedTag === normalize(clickedTag)) {
           setSelectedTag('');
         } else {
           setSelectedTag(clickedTag);

@@ -302,6 +302,7 @@ a:hover {
 }
 .archive {
   padding: 0 6em 0 6em;
+  background: transparent;
 }
 .article {
   padding: 0 6em 0 6em;
