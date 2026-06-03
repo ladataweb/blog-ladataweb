@@ -295,6 +295,7 @@ a:hover {
 .content {
   min-width: 0;
   padding: 48px 40px 72px 24px;
+  background: ivory;
 }
 
 .home {
