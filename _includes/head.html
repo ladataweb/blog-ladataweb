@@ -26,9 +26,15 @@
 <meta property="og:title" content="{{ page_title | escape }}">
 <meta property="og:description" content="{{ page_description | escape }}">
 <meta property="og:url" content="{{ canonical_url }}">
+
 {% if page.image %}
   <meta property="og:image" content="{{ page.image | absolute_url }}">
-{% else %}
+{% elsif page.content contains "<img" %}
+  {% assign html_parts = page.content | split: "<img" %}
+  {% assign src_part = html_parts[1] | split: 'src="' %}
+  {% assign img_url = src_part[1] | split: '"' | first %}
+  <meta property="og:image" content="{{ img_url | absolute_url }}">
+{% else %} 
   <meta property="og:image" content="{{ '/assets/images/ldw-logo.png' | absolute_url }}">
 {% endif %}
 
