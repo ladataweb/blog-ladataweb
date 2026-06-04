@@ -105,6 +105,9 @@ permalink: /archive/
     var activeTagLabel = document.getElementById('activeTagLabel');
     var emptyState = document.getElementById('archiveEmpty');
 
+    var urlParams = new URLSearchParams(window.location.search);
+    var initialQuery = (urlParams.get('q') || '').trim();
+
     var archiveItems = Array.prototype.slice.call(document.querySelectorAll('#archive-list .archive__item'));
     var tagButtons = Array.prototype.slice.call(document.querySelectorAll('#tagBrowserList .tag-chip'));
 
@@ -262,6 +265,11 @@ permalink: /archive/
     }
 
     syncTagVisibility();
+
+    if (initialQuery && searchInput) {
+      searchInput.value = initialQuery;
+    }
+
     applyFilters();
   })();
 </script>
